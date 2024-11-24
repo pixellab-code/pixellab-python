@@ -1,0 +1,3 @@
+- Python >=3.9
+- Pydantic 2
+- Black formatting
