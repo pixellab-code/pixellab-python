@@ -27,12 +27,14 @@ import pixellab
 client = pixellab.Client.from_env_file(".env.secrets")
 
 # create image
-response = client.generate_image_v6()
+response = client.generate_image_v6(prompt="cute dragon")
 
-response.pil_image()
+response.image.pil_image()
 ```
 
 ## Development
+
+### Install dependencies
 
 ```bash
 poetry install
