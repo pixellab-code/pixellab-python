@@ -22,17 +22,17 @@ class Base64Image(BaseModel):
         return self.pil_image()._repr_png_()
 
 
-class GenerateImageV6Response(BaseModel):
-    image: Base64Image
+class GenerateAnimationSkeletonResponse(BaseModel):
+    images: list[Base64Image]
 
-def generate_image_v6(
+def generate_animation_skeleton(
     client: PixelLabClient,
     prompt: str,
-) -> GenerateImageV6Response:
+) -> GenerateAnimationSkeletonResponse:
     response = requests.post(
-        f"{client.base_url}/generate-image-v6",
+        f"{client.base_url}/generate-animation-skeleton",
         headers=client.headers(),
         json=dict(prompt),
     )
 
-    return GenerateImageV6Response(**response.json())
+    return GenerateAnimationSkeletonResponse(**response.json())
