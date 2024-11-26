@@ -10,7 +10,8 @@ from .settings import settings
 
 class PixelLabClient(BaseModel):
     secret: str
-    base_url: str = "https://api.track.pixellab.io/external/v1"
+    # base_url: str = "https://api.track.pixellab.io/external/v1"
+    base_url: str = "http://localhost:8000/v1"
 
     @classmethod
     def from_env(cls) -> PixelLabClient:
@@ -29,3 +30,6 @@ class PixelLabClient(BaseModel):
         return {"Authorization": f"Bearer {self.secret}"}
 
     from .generate_image_v6 import generate_image_v6
+    from .generate_image_v5 import generate_image_v5
+    from .generate_rotation import generate_rotation
+    from .generate_animation_skeleton import generate_animation_skeleton

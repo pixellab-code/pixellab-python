@@ -22,17 +22,17 @@ class Base64Image(BaseModel):
         return self.pil_image()._repr_png_()
 
 
-class GenerateImageV6Response(BaseModel):
+class GenerateImageV5Response(BaseModel):
     image: Base64Image
 
-def generate_image_v6(
+def generate_image_v5(
     client: PixelLabClient,
     prompt: str,
-) -> GenerateImageV6Response:
+) -> GenerateImageV5Response:
     response = requests.post(
-        f"{client.base_url}/generate-image-v6",
+        f"{client.base_url}/generate-image-v5",
         headers=client.headers(),
         json=dict(prompt),
     )
 
-    return GenerateImageV6Response(**response.json())
+    return GenerateImageV5Response(**response.json())

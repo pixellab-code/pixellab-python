@@ -22,17 +22,17 @@ class Base64Image(BaseModel):
         return self.pil_image()._repr_png_()
 
 
-class GenerateImageV6Response(BaseModel):
+class GenerateRotationResponse(BaseModel):
     image: Base64Image
 
-def generate_image_v6(
+def generate_rotation(
     client: PixelLabClient,
     prompt: str,
-) -> GenerateImageV6Response:
+) -> GenerateRotationResponse:
     response = requests.post(
-        f"{client.base_url}/generate-image-v6",
+        f"{client.base_url}/generate-rotation",
         headers=client.headers(),
         json=dict(prompt),
     )
 
-    return GenerateImageV6Response(**response.json())
+    return GenerateRotationResponse(**response.json())
