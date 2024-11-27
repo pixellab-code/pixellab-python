@@ -9,11 +9,8 @@ def test_incorrect_secret_raises_meaningful_error():
     )
 
     with pytest.raises(ValueError) as exc_info:
-        client.generate_image_pixflux(
-            description="cute dragon",
-        )
+        client.generate_image_pixflux(description="cute dragon")
     
     # Verify the error message is helpful
     error_msg = str(exc_info.value)
-    print(error_msg)
     assert "Invalid API token" in error_msg

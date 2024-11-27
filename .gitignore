@@ -47,3 +47,5 @@ htmlcov/
 # Distribution / packaging
 dist/
 build/
+
+tests/results/
