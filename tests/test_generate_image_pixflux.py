@@ -4,7 +4,7 @@ import pixellab
 def test_generate_image_v6():
     client = pixellab.Client.from_env_file(".env.development.secrets")
 
-    response = client.generate_image_v6(
+    response = client.generate_image_pixflux(
         {
             "description": "cute dragon",
             "image_size": {"width": 64, "height": 64},

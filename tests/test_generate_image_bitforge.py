@@ -17,7 +17,7 @@ def test_generate_image_v5():
     style_image_data = encode_image_to_base64("tests/images/boy.png")
     mask_image_data = encode_image_to_base64("tests/images/mask.png")
 
-    response = client.generate_image_v5(
+    response = client.generate_image_bitforge(
         {
             "description": "boy with wings",
             "image_size": {"width": 16, "height": 16},
