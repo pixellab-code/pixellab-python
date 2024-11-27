@@ -22,17 +22,17 @@ class Base64Image(BaseModel):
         return self.pil_image()._repr_png_()
 
 
-class GenerateImageV5Response(BaseModel):
+class GenerateImageBitForgeResponse(BaseModel):
     image: Base64Image
 
-def generate_image_v5(
+def generate_image_bitforge(
     client: PixelLabClient,
     prompt: str,
-) -> GenerateImageV5Response:
+) -> GenerateImageBitForgeResponse:
     response = requests.post(
-        f"{client.base_url}/generate-image-v5",
+        f"{client.base_url}/generate-image-bitforge",
         headers=client.headers(),
         json=dict(prompt),
     )
 
-    return GenerateImageV5Response(**response.json())
+    return GenerateImageBitForgeResponse(**response.json())

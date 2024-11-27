@@ -29,7 +29,7 @@ class PixelLabClient(BaseModel):
     def headers(self):
         return {"Authorization": f"Bearer {self.secret}"}
 
-    from .generate_image_v6 import generate_image_v6
-    from .generate_image_v5 import generate_image_v5
+    from .generate_image_pixflux import generate_image_pixflux
+    from .generate_image_bitforge import generate_image_bitforge
     from .generate_rotation import generate_rotation
     from .generate_animation_skeleton import generate_animation_skeleton
