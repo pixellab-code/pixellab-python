@@ -17,7 +17,6 @@ def encode_image_to_base64(file_path: Path | str) -> str:
 
 def test_generate_image_bitforge():
     client = pixellab.Client.from_env_file(".env.development.secrets")
-    print(client)
 
     # Use pathlib for file paths
     images_dir = Path("tests") / "images"
