@@ -10,8 +10,7 @@ from .settings import settings
 
 class PixelLabClient(BaseModel):
     secret: str
-    # base_url: str = "https://api.track.pixellab.io/external/v1"
-    base_url: str = "http://localhost:8000/v1"
+    base_url: str = "https://api.track.pixellab.io/v1"
 
     @classmethod
     def from_env(cls) -> PixelLabClient:

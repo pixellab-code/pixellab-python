@@ -27,12 +27,20 @@ class GenerateImagePixFluxResponse(BaseModel):
 
 def generate_image_pixflux(
     client: PixelLabClient,
-    prompt: str,
+    description: str,
 ) -> GenerateImagePixFluxResponse:
     response = requests.post(
         f"{client.base_url}/generate-image-pixflux",
         headers=client.headers(),
-        json=dict(prompt),
+        json=dict(description=description),
     )
+    
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        if response.status_code == 401:
+            error_detail = response.json().get('detail', 'Unknown error')
+            raise ValueError(error_detail)
+        raise
 
     return GenerateImagePixFluxResponse(**response.json())
