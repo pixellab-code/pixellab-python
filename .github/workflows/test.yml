@@ -30,6 +30,11 @@ jobs:
           python -m pip install --upgrade pip
           curl -sSL https://install.python-poetry.org | python - --version 1.8.1
           poetry install --no-root
+
+      - name: Create .env.development.secrets
+        run: |
+          echo "PIXELLAB_SECRET=${{ secrets.API_SECRET }}" > .env.development.secrets
+
       - name: Test with pytest
         run: |
           $HOME/.local/bin/poetry run pytest
