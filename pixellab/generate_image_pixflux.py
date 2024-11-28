@@ -1,76 +1,119 @@
 from __future__ import annotations
 
-from io import BytesIO
-import base64
-from typing import TYPE_CHECKING, Optional, Literal
+from typing import TYPE_CHECKING, Any, Optional
+
 import PIL.Image
 import requests
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validate_call
+
+from .models import Base64Image, ImageSize
+from .types import CameraView, Detail, Direction, Outline, Shading
 
 if TYPE_CHECKING:
     from .client import PixelLabClient
 
-class Base64Image(BaseModel):
-    type: Literal["base64"] = "base64"
-    base64: str
-    format: str = "png"
-
-    def pil_image(self) -> PIL.Image:
-        return PIL.Image.open(BytesIO(base64.b64decode(self.base64)))
-
-    def _repr_png_(self):
-        return self.pil_image()._repr_png_()
-
-class ImageSize(BaseModel):
-    width: int = Field(default=128, ge=16, le=200)
-    height: int = Field(default=128, ge=16, le=200)
-
-class GenerateImagePixFluxRequest(BaseModel):
-    description: str
-    negative_description: str = ""
-    image_size: ImageSize = ImageSize()
-    text_guidance_scale: float = Field(default=3.0, ge=1.0, le=20.0)
-    extra_guidance_scale: float = Field(default=3.0, ge=0.0, le=20.0)
-    style_strength: float = Field(default=0.0, ge=0.0, le=100.0)
-    no_background: bool = False
-    seed: int = 0
 
 class GenerateImagePixFluxResponse(BaseModel):
     image: Base64Image
 
+
+@validate_call(config=dict(arbitrary_types_allowed=True))
 def generate_image_pixflux(
-    client: PixelLabClient,
-    description: str,
-    *,
-    negative_description: str = "",
-    image_size: Optional[ImageSize] = None,
-    text_guidance_scale: float = 3.0,
-    extra_guidance_scale: float = 3.0,
-    style_strength: float = 0.0,
-    no_background: bool = False,
-    seed: int = 0,
+    client: Any,
+    description: str = Field(
+        ..., description="Text description of the image to generate"
+    ),
+    image_size: ImageSize = Field(..., description="Size of the generated image"),
+    negative_description: str = Field(
+        default="",
+        description="Text description of what to avoid in the generated image",
+    ),
+    text_guidance_scale: float = Field(
+        default=7.5,
+        ge=1.0,
+        le=20.0,
+        description="How closely to follow the text description",
+    ),
+    outline: Optional[Outline] = Field(
+        default=None, description="Outline style reference"
+    ),
+    shading: Optional[Shading] = Field(
+        default=None, description="Shading style reference"
+    ),
+    detail: Optional[Detail] = Field(
+        default=None, description="Detail style reference"
+    ),
+    view: Optional[CameraView] = Field(default=None, description="Camera view angle"),
+    direction: Optional[Direction] = Field(
+        default=None, description="Subject direction"
+    ),
+    isometric: bool = Field(default=False, description="Generate in isometric view"),
+    oblique_projection: bool = Field(
+        default=False, description="Generate in oblique projection"
+    ),
+    no_background: bool = Field(
+        default=False, description="Generate with transparent background"
+    ),
+    coverage_percentage: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=100.0,
+        description="Percentage of the canvas to cover",
+    ),
+    init_image: PIL.Image.Image = Field(
+        default=None, description="Initial image to start from"
+    ),
+    init_image_strength: int = Field(
+        default=0,
+        ge=0,
+        le=1000,
+        description="Strength of the initial image influence",
+    ),
+    color_image: PIL.Image.Image = Field(
+        default=None,
+        description="Forced color palette, 64x64 image containing colors used for palette",
+    ),
+    seed: int = Field(default=0, description="Seed decides the starting noise"),
 ) -> GenerateImagePixFluxResponse:
-    request = GenerateImagePixFluxRequest(
-        description=description,
-        negative_description=negative_description,
-        image_size=image_size or ImageSize(),
-        text_guidance_scale=text_guidance_scale,
-        extra_guidance_scale=extra_guidance_scale,
-        style_strength=style_strength,
-        no_background=no_background,
-        seed=seed,
-    )
+    """Generate an image using PixFlux."""
+    init_image = Base64Image.from_pil_image(init_image) if init_image else None
+    color_image = Base64Image.from_pil_image(color_image) if color_image else None
+
+    request_data = {
+        "description": description,
+        "image_size": image_size.model_dump(),
+        "negative_description": negative_description,
+        "text_guidance_scale": text_guidance_scale,
+        "outline": outline.model_dump() if outline else None,
+        "shading": shading.model_dump() if shading else None,
+        "detail": detail.model_dump() if detail else None,
+        "view": view,
+        "direction": direction,
+        "isometric": isometric,
+        "oblique_projection": oblique_projection,
+        "no_background": no_background,
+        "coverage_percentage": coverage_percentage,
+        "init_image": init_image.model_dump() if init_image else None,
+        "init_image_strength": init_image_strength,
+        "color_image": color_image.model_dump() if color_image else None,
+        "seed": seed,
+    }
+
+    print(request_data)
 
     try:
         response = requests.post(
             f"{client.base_url}/generate-image-pixflux",
             headers=client.headers(),
-            json=request.model_dump(),
+            json=request_data,
         )
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
         if response.status_code == 401:
-            error_detail = response.json().get('detail', 'Unknown error')
+            error_detail = response.json().get("detail", "Unknown error")
+            raise ValueError(error_detail)
+        elif response.status_code == 422:
+            error_detail = response.json().get("detail", "Unknown error")
             raise ValueError(error_detail)
         raise
 

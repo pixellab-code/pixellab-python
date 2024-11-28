@@ -1,56 +1,44 @@
-import pixellab
-import base64
-import PIL.Image
-import json
-from io import BytesIO
+from __future__ import annotations
 
-def encode_image_to_base64(file_path: str) -> str:
-    with open(file_path, "rb") as image_file:
-        image = PIL.Image.open(image_file)
-        buffered = BytesIO()
-        image.save(buffered, format="PNG")
-        return base64.b64encode(buffered.getvalue()).decode("utf-8")
+import json
+from pathlib import Path
+
+import PIL.Image
+
+import pixellab
+
 
 def test_generate_animation_skeleton():
     client = pixellab.Client.from_env_file(".env.development.secrets")
 
-    reference_image_data = encode_image_to_base64("tests/images/boy.png")
-    freeze_mask_data = encode_image_to_base64("tests/images/freeze_mask.png")
+    images_dir = Path("tests") / "images"
+    reference_image = PIL.Image.open(images_dir / "boy.png").resize((16, 16))
+    freeze_mask = PIL.Image.open(images_dir / "freeze_mask.png").resize((16, 16))
 
     # Load key points from walk.json
-    with open("tests/skeleton_points/walk.json", "r") as file:
+    skeleton_points_dir = Path("tests") / "skeleton_points"
+    with open(skeleton_points_dir / "walk.json", "r") as file:
         skeleton_keypoints = json.load(file)["pose_keypoints"]
 
+    animation_images = [reference_image, None, None, None]
+    mask_images = [freeze_mask, None, None, None]
+
     response = client.generate_animation_skeleton(
-        {
-            "view": "side",
-            "direction": "south",
-            "image_size": {"width": 16, "height": 16},
-            "reference_image": {
-                "type": "base64",
-                "base64": reference_image_data,
-            },
-            "animation_images": [
-                {
-                    "type": "base64",
-                    "base64": reference_image_data,
-                },
-                None,
-                None,
-                None
-            ],
-            "mask_images": [
-                {
-                    "type": "base64",
-                    "base64": freeze_mask_data,
-                },
-                None,
-                None,
-                None
-            ],
-            "skeleton_keypoints": skeleton_keypoints,  # Add key points to the request
-        }
+        view="side",
+        direction="south",
+        image_size={"width": 16, "height": 16},
+        reference_image=reference_image,
+        animation_images=animation_images,
+        mask_images=mask_images,
+        skeleton_keypoints=skeleton_keypoints,
     )
 
-    for image in response.images:
-        image.pil_image()
+    assert len(response.images) > 0
+    for i, image in enumerate(response.images):
+        pil_image = image.pil_image()
+        assert isinstance(pil_image, PIL.Image.Image)
+        assert pil_image.size == (16, 16)
+
+        results_dir = Path("tests") / "results"
+        results_dir.mkdir(exist_ok=True)
+        pil_image.save(results_dir / f"animation_skeleton_frame_{i}.png")

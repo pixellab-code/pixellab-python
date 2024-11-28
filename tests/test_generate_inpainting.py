@@ -1,40 +1,33 @@
-import pixellab
-import base64
+from __future__ import annotations
+
+from pathlib import Path
+
 import PIL.Image
-from io import BytesIO
 
-def encode_image_to_base64(file_path: str) -> str:
-    with open(file_path, "rb") as image_file:
-        image = PIL.Image.open(image_file)
-        buffered = BytesIO()
-        image.save(buffered, format="PNG")
-        return base64.b64encode(buffered.getvalue()).decode("utf-8")
+import pixellab
 
-def test_generate_image_v5():
+
+def test_generate_inpainting():
     client = pixellab.Client.from_env_file(".env.development.secrets")
 
-    def encode_image_to_base64(file_path: str) -> str:
-        with open(file_path, "rb") as image_file:
-            image = PIL.Image.open(image_file)
-            buffered = BytesIO()
-            image.save(buffered, format="PNG")
-            return base64.b64encode(buffered.getvalue()).decode("utf-8")
+    images_dir = Path("tests") / "images"
+    inpainting_image = PIL.Image.open(images_dir / "boy.png").resize((16, 16))
+    mask_image = PIL.Image.open(images_dir / "mask.png").resize((16, 16))
 
-    inpainting_image_data = encode_image_to_base64("tests/images/boy.png")
-    mask_image_data = encode_image_to_base64("tests/images/mask.png")
-
-    response = client.generate_image_v5(
-        {
-            "description": "boy with wings",
-            "image_size": {"width": 16, "height": 16},
-            "no_background": True,
-            "inpainting_image": {
-                "type": "base64",
-                "base64": inpainting_image_data,
-            },
-            "mask_image": {
-                "type": "base64",
-                "base64": mask_image_data,
-            },
-        }
+    response = client.generate_inpainting(
+        description="boy with wings",
+        image_size={"width": 16, "height": 16},
+        no_background=True,
+        inpainting_image=inpainting_image,
+        mask_image=mask_image,
+        text_guidance_scale=3.0,
     )
+
+    image = response.image.pil_image()
+    assert isinstance(image, PIL.Image.Image)
+    assert image.size == (16, 16)
+
+    results_dir = Path("tests") / "results"
+    results_dir.mkdir(exist_ok=True)
+
+    image.save(results_dir / "inpainting_boy_with_wings.png")

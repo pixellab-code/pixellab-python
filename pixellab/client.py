@@ -5,6 +5,7 @@ from typing import Generator, List, Optional
 
 import requests
 from pydantic import BaseModel
+
 from .settings import settings
 
 
@@ -28,7 +29,8 @@ class PixelLabClient(BaseModel):
     def headers(self):
         return {"Authorization": f"Bearer {self.secret}"}
 
-    from .generate_image_pixflux import generate_image_pixflux
-    from .generate_image_bitforge import generate_image_bitforge
-    from .generate_rotation import generate_rotation
     from .generate_animation_skeleton import generate_animation_skeleton
+    from .generate_image_bitforge import generate_image_bitforge
+    from .generate_image_pixflux import generate_image_pixflux
+    from .generate_inpainting import generate_inpainting
+    from .generate_rotation import generate_rotation

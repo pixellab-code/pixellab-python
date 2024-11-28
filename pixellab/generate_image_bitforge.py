@@ -1,43 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Any
+from enum import Enum
+from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict
+
+import PIL.Image
 import requests
 from pydantic import BaseModel, Field, validate_call
 
 from .models import Base64Image, ImageSize
+from .types import CameraView, Detail, Direction, Outline, Shading
 
 if TYPE_CHECKING:
     from .client import PixelLabClient
-
-
-class CameraView(str):
-    """Camera view angle for the generated image"""
-
-    pass
-
-
-class Direction(str):
-    """Subject direction in the generated image"""
-
-    pass
-
-
-class Outline(BaseModel):
-    """Outline style reference"""
-
-    pass
-
-
-class Shading(BaseModel):
-    """Shading style reference"""
-
-    pass
-
-
-class Detail(BaseModel):
-    """Detail style reference"""
-
-    pass
 
 
 class GenerateImageBitForgeResponse(BaseModel):
@@ -100,7 +74,7 @@ def generate_image_bitforge(
         le=100.0,
         description="Percentage of the canvas to cover",
     ),
-    init_image: Optional[Base64Image] = Field(
+    init_image: Optional[PIL.Image.Image] = Field(
         default=None, description="Initial image to start from"
     ),
     init_image_strength: int = Field(
@@ -109,21 +83,29 @@ def generate_image_bitforge(
         le=1000,
         description="Strength of the initial image influence",
     ),
-    style_image: Optional[Base64Image] = Field(
+    style_image: Optional[PIL.Image.Image] = Field(
         default=None, description="Reference image for style transfer"
     ),
-    inpainting_image: Optional[Base64Image] = Field(
+    inpainting_image: Optional[PIL.Image.Image] = Field(
         default=None, description="Reference image which is inpainted"
     ),
-    mask_image: Optional[Base64Image] = Field(
+    mask_image: Optional[PIL.Image.Image] = Field(
         default=None,
         description="Inpainting / mask image (black and white image, where the white is where the model should inpaint)",
     ),
-    color_image: Optional[Base64Image] = Field(
+    color_image: Optional[PIL.Image.Image] = Field(
         default=None,
         description="Forced color palette, 64x64 image containing colors used for palette",
     ),
 ) -> GenerateImageBitForgeResponse:
+    init_image = Base64Image.from_pil_image(init_image) if init_image else None
+    style_image = Base64Image.from_pil_image(style_image) if style_image else None
+    inpainting_image = (
+        Base64Image.from_pil_image(inpainting_image) if inpainting_image else None
+    )
+    mask_image = Base64Image.from_pil_image(mask_image) if mask_image else None
+    color_image = Base64Image.from_pil_image(color_image) if color_image else None
+
     request_data = {
         "description": description,
         "negative_description": negative_description,
@@ -131,9 +113,9 @@ def generate_image_bitforge(
         "text_guidance_scale": text_guidance_scale,
         "extra_guidance_scale": extra_guidance_scale,
         "style_strength": style_strength,
-        "outline": outline.model_dump() if outline else None,
-        "shading": shading.model_dump() if shading else None,
-        "detail": detail.model_dump() if detail else None,
+        "outline": outline,
+        "shading": shading,
+        "detail": detail,
         "view": view,
         "direction": direction,
         "isometric": isometric,
@@ -158,6 +140,9 @@ def generate_image_bitforge(
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
         if response.status_code == 401:
+            error_detail = response.json().get("detail", "Unknown error")
+            raise ValueError(error_detail)
+        elif response.status_code == 422:
             error_detail = response.json().get("detail", "Unknown error")
             raise ValueError(error_detail)
         raise
