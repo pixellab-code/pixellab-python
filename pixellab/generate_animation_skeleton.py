@@ -58,7 +58,7 @@ def generate_animation_skeleton(
         reference_image: Reference image for style guidance
         animation_images: Images used for showing the model with connected skeleton
         mask_images: Inpainting masks (black and white images, where white is where to inpaint)
-        color_image: Forced color palette (64x64 image containing colors used for palette)
+        color_image: Forced color palette
         seed: Seed for deterministic generation
 
     Returns:

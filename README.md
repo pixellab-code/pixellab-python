@@ -27,7 +27,7 @@ import pixellab
 client = pixellab.Client.from_env_file(".env.secrets")
 
 # create image
-response = client.generate_image_v6(prompt="cute dragon")
+response = client.generate_image_pixflux(description="cute dragon")
 
 response.image.pil_image()
 ```

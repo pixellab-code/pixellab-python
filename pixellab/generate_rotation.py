@@ -21,7 +21,7 @@ def generate_rotation(
     client: Any,
     image_size: ImageSize,
     from_image: PIL.Image.Image,
-    image_guidance_scale: float = 7.5,
+    image_guidance_scale: float = 3.0,
     from_view: Optional[CameraView] = None,
     to_view: Optional[CameraView] = None,
     from_direction: Optional[Direction] = None,
@@ -46,11 +46,11 @@ def generate_rotation(
         from_direction: From subject direction
         to_direction: To subject direction
         isometric: Generate in isometric view
-        oblique_projection: Generate in oblique projection
+        oblique_projection: Generate in oblique projection (beta)
         init_image: Initial image to start from
         init_image_strength: Strength of the initial image influence (0-1000)
         mask_image: Inpainting mask (black and white image, white is where to inpaint)
-        color_image: Forced color palette (64x64 image containing colors)
+        color_image: Forced color palette
         seed: Seed for deterministic generation
 
     Returns:

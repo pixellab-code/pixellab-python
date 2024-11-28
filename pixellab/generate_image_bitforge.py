@@ -55,20 +55,20 @@ def generate_image_bitforge(
         style_strength: Strength of the style transfer (0-100)
         no_background: Generate with transparent background
         seed: Seed for deterministic generation
-        outline: Outline style reference
-        shading: Shading style reference
-        detail: Detail style reference
-        view: Camera view angle
-        direction: Subject direction
-        isometric: Generate in isometric view
-        oblique_projection: Generate in oblique projection
-        coverage_percentage: Percentage of the canvas to cover (0-100)
+        outline: Outline style reference (weakly guiding)
+        shading: Shading style reference (weakly guiding)
+        detail: Detail style reference (weakly guiding)
+        view: Camera view angle (weakly guiding)
+        direction: Subject direction (weakly guiding)
+        isometric: Generate in isometric view (weakly guiding)
+        oblique_projection: Generate in oblique projection (beta)
+        coverage_percentage: Percentage of the canvas to cover (0-100) (weakly guiding)
         init_image: Initial image to start from
         init_image_strength: Strength of the initial image influence (0-1000)
         style_image: Reference image for style transfer
         inpainting_image: Reference image which is inpainted
         mask_image: Inpainting mask (black and white image, white is where to inpaint)
-        color_image: Forced color palette (64x64 image containing colors)
+        color_image: Forced color palette
 
     Returns:
         GenerateImageBitForgeResponse containing the generated image

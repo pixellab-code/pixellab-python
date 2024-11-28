@@ -25,7 +25,7 @@ def generate_inpainting(
     mask_image: PIL.Image.Image,
     negative_description: str = "",
     text_guidance_scale: float = 3.0,
-    extra_guidance_scale: float = 1.0,
+    extra_guidance_scale: float = 3.0,
     outline: Optional[Outline] = None,
     shading: Optional[Shading] = None,
     detail: Optional[Detail] = None,
@@ -50,17 +50,17 @@ def generate_inpainting(
         negative_description: Text description of what to avoid in the generated image
         text_guidance_scale: How closely to follow the text description (1.0-20.0)
         extra_guidance_scale: How closely to follow the style reference (0.0-20.0)
-        outline: Outline style reference
-        shading: Shading style reference
-        detail: Detail style reference
-        view: Camera view angle
-        direction: Subject direction
-        isometric: Generate in isometric view
-        oblique_projection: Generate in oblique projection
+        outline: Outline style reference (weakly guiding)
+        shading: Shading style reference (weakly guiding)
+        detail: Detail style reference (weakly guiding)
+        view: Camera view angle (weakly guiding)
+        direction: Subject direction (weakly guiding)
+        isometric: Generate in isometric view (weakly guiding)
+        oblique_projection: Generate in oblique projection (beta)
         no_background: Generate with transparent background
         init_image: Initial image to start from
         init_image_strength: Strength of the initial image influence (0-1000)
-        color_image: Forced color palette (64x64 image containing colors)
+        color_image: Forced color palette
         seed: Seed for deterministic generation
 
     Returns:

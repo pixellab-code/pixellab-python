@@ -22,14 +22,13 @@ def generate_image_pixflux(
     description: str,
     image_size: ImageSize,
     negative_description: str = "",
-    text_guidance_scale: float = 7.5,
+    text_guidance_scale: float = 8,
     outline: Optional[Outline] = None,
     shading: Optional[Shading] = None,
     detail: Optional[Detail] = None,
     view: Optional[CameraView] = None,
     direction: Optional[Direction] = None,
     isometric: bool = False,
-    oblique_projection: bool = False,
     no_background: bool = False,
     coverage_percentage: Optional[float] = None,
     init_image: Optional[PIL.Image.Image] = None,
@@ -51,12 +50,11 @@ def generate_image_pixflux(
         view: Camera view angle
         direction: Subject direction
         isometric: Generate in isometric view
-        oblique_projection: Generate in oblique projection
         no_background: Generate with transparent background
         coverage_percentage: Percentage of the canvas to cover (0-100)
         init_image: Initial image to start from
         init_image_strength: Strength of the initial image influence (0-1000)
-        color_image: Forced color palette (64x64 image containing colors)
+        color_image: Forced color palette
         seed: Seed for deterministic generation
 
     Returns:
@@ -80,7 +78,6 @@ def generate_image_pixflux(
         "view": view,
         "direction": direction,
         "isometric": isometric,
-        "oblique_projection": oblique_projection,
         "no_background": no_background,
         "coverage_percentage": coverage_percentage,
         "init_image": init_image.model_dump() if init_image else None,
