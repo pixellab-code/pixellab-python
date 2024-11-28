@@ -45,9 +45,9 @@ jobs:
           poetry version $(git tag --points-at HEAD)
           poetry build --format=wheel
 
-      # - name: Upload to pypi
-      #   env:
-      #     USERNAME: __token__
-      #     PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      #   run: |
-      #     poetry publish --username=$USERNAME --password=$PASSWORD
+      - name: Upload to pypi
+        env:
+          USERNAME: __token__
+          PASSWORD: ${{ secrets.PYPI }}
+        run: |
+          poetry publish --username=$USERNAME --password=$PASSWORD
