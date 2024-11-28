@@ -1,6 +1,4 @@
-from typing import Literal
-
-from pydantic import BaseModel, Field
+from typing import Literal, TypedDict
 
 SkeletonLabel = Literal[
     "NOSE",
@@ -24,8 +22,8 @@ SkeletonLabel = Literal[
 ]
 
 
-class Keypoint(BaseModel):
+class Keypoint(TypedDict):
     x: float
     y: float
     label: SkeletonLabel
-    z_index: float = Field(default=0.0)
+    z_index: float = 0.0

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict
 
 import PIL.Image
 import requests
-from pydantic import BaseModel, Field, validate_call
+from pydantic import BaseModel
 
 from .models import Base64Image, ImageSize
 from .types import CameraView, Detail, Direction, Outline, Shading
@@ -18,86 +18,65 @@ class GenerateImageBitForgeResponse(BaseModel):
     image: Base64Image
 
 
-@validate_call(config=dict(arbitrary_types_allowed=True))
 def generate_image_bitforge(
     client: Any,
-    description: str = Field(
-        ..., description="Text description of the image to generate"
-    ),
-    image_size: ImageSize = Field(..., description="Size of the generated image"),
-    negative_description: str = Field(
-        default="",
-        description="Text description of what to avoid in the generated image",
-    ),
-    text_guidance_scale: float = Field(
-        default=3.0,
-        ge=1.0,
-        le=20.0,
-        description="How closely to follow the text description",
-    ),
-    extra_guidance_scale: float = Field(
-        default=3.0,
-        ge=0.0,
-        le=20.0,
-        description="How closely to follow the style reference",
-    ),
-    style_strength: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=100.0,
-        description="Strength of the style transfer (0-100)",
-    ),
-    no_background: bool = Field(
-        default=False, description="Generate with transparent background"
-    ),
-    seed: int = Field(default=0, description="Seed decides the starting noise"),
-    outline: Optional[Outline] = Field(
-        default=None, description="Outline style reference"
-    ),
-    shading: Optional[Shading] = Field(
-        default=None, description="Shading style reference"
-    ),
-    detail: Optional[Detail] = Field(
-        default=None, description="Detail style reference"
-    ),
-    view: Optional[CameraView] = Field(default=None, description="Camera view angle"),
-    direction: Optional[Direction] = Field(
-        default=None, description="Subject direction"
-    ),
-    isometric: bool = Field(default=False, description="Generate in isometric view"),
-    oblique_projection: bool = Field(
-        default=False, description="Generate in oblique projection"
-    ),
-    coverage_percentage: Optional[float] = Field(
-        default=None,
-        ge=0.0,
-        le=100.0,
-        description="Percentage of the canvas to cover",
-    ),
-    init_image: Optional[PIL.Image.Image] = Field(
-        default=None, description="Initial image to start from"
-    ),
-    init_image_strength: int = Field(
-        default=0,
-        ge=0,
-        le=1000,
-        description="Strength of the initial image influence",
-    ),
-    style_image: Optional[PIL.Image.Image] = Field(
-        default=None, description="Reference image for style transfer"
-    ),
-    inpainting_image: Optional[PIL.Image.Image] = Field(
-        default=None, description="Reference image which is inpainted"
-    ),
-    mask_image: Optional[PIL.Image.Image] = Field(
-        default=None,
-        description="Inpainting / mask image (black and white image, where the white is where the model should inpaint)",
-    ),
-    color_image: Optional[PIL.Image.Image] = Field(
-        default=None,
-        description="Forced color palette, 64x64 image containing colors used for palette",
-    ),
+    description: str,
+    image_size: ImageSize,
+    negative_description: str = "",
+    text_guidance_scale: float = 3.0,
+    extra_guidance_scale: float = 3.0,
+    style_strength: float = 0.0,
+    no_background: bool = False,
+    seed: int = 0,
+    outline: Optional[Outline] = None,
+    shading: Optional[Shading] = None,
+    detail: Optional[Detail] = None,
+    view: Optional[CameraView] = None,
+    direction: Optional[Direction] = None,
+    isometric: bool = False,
+    oblique_projection: bool = False,
+    coverage_percentage: Optional[float] = None,
+    init_image: Optional[PIL.Image.Image] = None,
+    init_image_strength: int = 0,
+    style_image: Optional[PIL.Image.Image] = None,
+    inpainting_image: Optional[PIL.Image.Image] = None,
+    mask_image: Optional[PIL.Image.Image] = None,
+    color_image: Optional[PIL.Image.Image] = None,
 ) -> GenerateImageBitForgeResponse:
+    """Generate an image using BitForge.
+
+    Args:
+        client: The PixelLab client instance
+        description: Text description of the image to generate
+        image_size: Size of the generated image
+        negative_description: Text description of what to avoid in the generated image
+        text_guidance_scale: How closely to follow the text description (1.0-20.0)
+        extra_guidance_scale: How closely to follow the style reference (0.0-20.0)
+        style_strength: Strength of the style transfer (0-100)
+        no_background: Generate with transparent background
+        seed: Seed for deterministic generation
+        outline: Outline style reference
+        shading: Shading style reference
+        detail: Detail style reference
+        view: Camera view angle
+        direction: Subject direction
+        isometric: Generate in isometric view
+        oblique_projection: Generate in oblique projection
+        coverage_percentage: Percentage of the canvas to cover (0-100)
+        init_image: Initial image to start from
+        init_image_strength: Strength of the initial image influence (0-1000)
+        style_image: Reference image for style transfer
+        inpainting_image: Reference image which is inpainted
+        mask_image: Inpainting mask (black and white image, white is where to inpaint)
+        color_image: Forced color palette (64x64 image containing colors)
+
+    Returns:
+        GenerateImageBitForgeResponse containing the generated image
+
+    Raises:
+        ValueError: If authentication fails or validation errors occur
+        requests.exceptions.HTTPError: For other HTTP-related errors
+    """
     init_image = Base64Image.from_pil_image(init_image) if init_image else None
     style_image = Base64Image.from_pil_image(style_image) if style_image else None
     inpainting_image = (
@@ -108,8 +87,8 @@ def generate_image_bitforge(
 
     request_data = {
         "description": description,
+        "image_size": image_size,
         "negative_description": negative_description,
-        "image_size": image_size.model_dump(),
         "text_guidance_scale": text_guidance_scale,
         "extra_guidance_scale": extra_guidance_scale,
         "style_strength": style_strength,

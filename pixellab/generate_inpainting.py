@@ -17,71 +17,59 @@ class GenerateInpaintingResponse(BaseModel):
     image: Base64Image
 
 
-@validate_call(config=dict(arbitrary_types_allowed=True))
 def generate_inpainting(
     client: Any,
-    description: str = Field(
-        ..., description="Text description of the image to generate"
-    ),
-    image_size: ImageSize = Field(..., description="Size of the generated image"),
-    inpainting_image: PIL.Image.Image = Field(
-        description="Reference image which is inpainted"
-    ),
-    mask_image: PIL.Image.Image = Field(
-        description="Inpainting / mask image (black and white image, where the white is where the model should inpaint)"
-    ),
-    negative_description: str = Field(
-        default="",
-        description="Text description of what to avoid in the generated image",
-    ),
-    text_guidance_scale: float = Field(
-        default=3.0,
-        ge=1.0,
-        le=20.0,
-        description="How closely to follow the text description",
-    ),
-    extra_guidance_scale: float = Field(
-        default=1.0,
-        ge=0.0,
-        le=20.0,
-        description="How closely to follow the style reference",
-    ),
-    outline: Optional[Outline] = Field(
-        default=None, description="Outline style reference"
-    ),
-    shading: Optional[Shading] = Field(
-        default=None, description="Shading style reference"
-    ),
-    detail: Optional[Detail] = Field(
-        default=None, description="Detail style reference"
-    ),
-    view: Optional[CameraView] = Field(default=None, description="Camera view angle"),
-    direction: Optional[Direction] = Field(
-        default=None, description="Subject direction"
-    ),
-    isometric: bool = Field(default=False, description="Generate in isometric view"),
-    oblique_projection: bool = Field(
-        default=False, description="Generate in oblique projection"
-    ),
-    no_background: bool = Field(
-        default=False, description="Generate with transparent background"
-    ),
-    init_image: Optional[PIL.Image.Image] = Field(
-        default=None, description="Initial image to start from"
-    ),
-    init_image_strength: int = Field(
-        default=0,
-        ge=0,
-        le=1000,
-        description="Strength of the initial image influence",
-    ),
-    color_image: Optional[PIL.Image.Image] = Field(
-        default=None,
-        description="Forced color palette, 64x64 image containing colors used for palette",
-    ),
-    seed: int = Field(default=0, description="Seed decides the starting noise"),
+    description: str,
+    image_size: ImageSize,
+    inpainting_image: PIL.Image.Image,
+    mask_image: PIL.Image.Image,
+    negative_description: str = "",
+    text_guidance_scale: float = 3.0,
+    extra_guidance_scale: float = 1.0,
+    outline: Optional[Outline] = None,
+    shading: Optional[Shading] = None,
+    detail: Optional[Detail] = None,
+    view: Optional[CameraView] = None,
+    direction: Optional[Direction] = None,
+    isometric: bool = False,
+    oblique_projection: bool = False,
+    no_background: bool = False,
+    init_image: Optional[PIL.Image.Image] = None,
+    init_image_strength: int = 0,
+    color_image: Optional[PIL.Image.Image] = None,
+    seed: int = 0,
 ) -> GenerateInpaintingResponse:
-    """Generate an inpainted image."""
+    """Generate an inpainted image.
+
+    Args:
+        client: The PixelLab client instance
+        description: Text description of the image to generate
+        image_size: Size of the generated image
+        inpainting_image: Reference image which is inpainted
+        mask_image: Inpainting mask (black and white image, white is where to inpaint)
+        negative_description: Text description of what to avoid in the generated image
+        text_guidance_scale: How closely to follow the text description (1.0-20.0)
+        extra_guidance_scale: How closely to follow the style reference (0.0-20.0)
+        outline: Outline style reference
+        shading: Shading style reference
+        detail: Detail style reference
+        view: Camera view angle
+        direction: Subject direction
+        isometric: Generate in isometric view
+        oblique_projection: Generate in oblique projection
+        no_background: Generate with transparent background
+        init_image: Initial image to start from
+        init_image_strength: Strength of the initial image influence (0-1000)
+        color_image: Forced color palette (64x64 image containing colors)
+        seed: Seed for deterministic generation
+
+    Returns:
+        GenerateInpaintingResponse containing the generated image
+
+    Raises:
+        ValueError: If authentication fails or validation errors occur
+        requests.exceptions.HTTPError: For other HTTP-related errors
+    """
     init_image = Base64Image.from_pil_image(init_image) if init_image else None
     inpainting_image = Base64Image.from_pil_image(inpainting_image)
     mask_image = Base64Image.from_pil_image(mask_image)
@@ -89,7 +77,7 @@ def generate_inpainting(
 
     request_data = {
         "description": description,
-        "image_size": image_size.model_dump(),
+        "image_size": image_size,
         "negative_description": negative_description,
         "text_guidance_scale": text_guidance_scale,
         "extra_guidance_scale": extra_guidance_scale,

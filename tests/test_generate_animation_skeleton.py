@@ -33,12 +33,19 @@ def test_generate_animation_skeleton():
         skeleton_keypoints=skeleton_keypoints,
     )
 
-    assert len(response.images) > 0
+    assert len(response.images) == 4
     for i, image in enumerate(response.images):
         pil_image = image.pil_image()
         assert isinstance(pil_image, PIL.Image.Image)
         assert pil_image.size == (16, 16)
 
-        results_dir = Path("tests") / "results"
-        results_dir.mkdir(exist_ok=True)
-        pil_image.save(results_dir / f"animation_skeleton_frame_{i}.png")
+    results_dir = Path("tests") / "results"
+    results_dir.mkdir(exist_ok=True)
+
+    total_width = 16 * len(response.images)
+    stacked_image = PIL.Image.new("RGBA", (total_width, 16))
+
+    for i, image in enumerate(response.images):
+        stacked_image.paste(image.pil_image(), (i * 16, 0))
+
+    stacked_image.save(results_dir / "animation_skeleton_frames.png")

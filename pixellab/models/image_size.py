@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from typing_extensions import TypedDict
 
 
-class ImageSize(BaseModel):
-    width: int = Field(default=128, ge=16, le=200)
-    height: int = Field(default=128, ge=16, le=200)
+class ImageSize(TypedDict):
+    width: int
+    height: int

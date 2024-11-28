@@ -17,71 +17,61 @@ class GenerateImagePixFluxResponse(BaseModel):
     image: Base64Image
 
 
-@validate_call(config=dict(arbitrary_types_allowed=True))
 def generate_image_pixflux(
     client: Any,
-    description: str = Field(
-        ..., description="Text description of the image to generate"
-    ),
-    image_size: ImageSize = Field(..., description="Size of the generated image"),
-    negative_description: str = Field(
-        default="",
-        description="Text description of what to avoid in the generated image",
-    ),
-    text_guidance_scale: float = Field(
-        default=7.5,
-        ge=1.0,
-        le=20.0,
-        description="How closely to follow the text description",
-    ),
-    outline: Optional[Outline] = Field(
-        default=None, description="Outline style reference"
-    ),
-    shading: Optional[Shading] = Field(
-        default=None, description="Shading style reference"
-    ),
-    detail: Optional[Detail] = Field(
-        default=None, description="Detail style reference"
-    ),
-    view: Optional[CameraView] = Field(default=None, description="Camera view angle"),
-    direction: Optional[Direction] = Field(
-        default=None, description="Subject direction"
-    ),
-    isometric: bool = Field(default=False, description="Generate in isometric view"),
-    oblique_projection: bool = Field(
-        default=False, description="Generate in oblique projection"
-    ),
-    no_background: bool = Field(
-        default=False, description="Generate with transparent background"
-    ),
-    coverage_percentage: Optional[float] = Field(
-        default=None,
-        ge=0.0,
-        le=100.0,
-        description="Percentage of the canvas to cover",
-    ),
-    init_image: PIL.Image.Image = Field(
-        default=None, description="Initial image to start from"
-    ),
-    init_image_strength: int = Field(
-        default=0,
-        ge=0,
-        le=1000,
-        description="Strength of the initial image influence",
-    ),
-    color_image: PIL.Image.Image = Field(
-        default=None,
-        description="Forced color palette, 64x64 image containing colors used for palette",
-    ),
-    seed: int = Field(default=0, description="Seed decides the starting noise"),
+    description: str,
+    image_size: ImageSize,
+    negative_description: str = "",
+    text_guidance_scale: float = 7.5,
+    outline: Optional[Outline] = None,
+    shading: Optional[Shading] = None,
+    detail: Optional[Detail] = None,
+    view: Optional[CameraView] = None,
+    direction: Optional[Direction] = None,
+    isometric: bool = False,
+    oblique_projection: bool = False,
+    no_background: bool = False,
+    coverage_percentage: Optional[float] = None,
+    init_image: Optional[PIL.Image.Image] = None,
+    init_image_strength: int = 0,
+    color_image: Optional[PIL.Image.Image] = None,
+    seed: int = 0,
 ) -> GenerateImagePixFluxResponse:
-    """Generate an image using PixFlux."""
+    """Generate an image using PixFlux.
+
+    Args:
+        client: The PixelLab client instance
+        description: Text description of the image to generate
+        image_size: Size of the generated image
+        negative_description: Text description of what to avoid in the generated image
+        text_guidance_scale: How closely to follow the text description (1.0-20.0)
+        outline: Outline style reference
+        shading: Shading style reference
+        detail: Detail style reference
+        view: Camera view angle
+        direction: Subject direction
+        isometric: Generate in isometric view
+        oblique_projection: Generate in oblique projection
+        no_background: Generate with transparent background
+        coverage_percentage: Percentage of the canvas to cover (0-100)
+        init_image: Initial image to start from
+        init_image_strength: Strength of the initial image influence (0-1000)
+        color_image: Forced color palette (64x64 image containing colors)
+        seed: Seed for deterministic generation
+
+    Returns:
+        GenerateImagePixFluxResponse containing the generated image
+
+    Raises:
+        ValueError: If authentication fails or validation errors occur
+        requests.exceptions.HTTPError: For other HTTP-related errors
+    """
     init_image = Base64Image.from_pil_image(init_image) if init_image else None
     color_image = Base64Image.from_pil_image(color_image) if color_image else None
 
     request_data = {
         "description": description,
-        "image_size": image_size.model_dump(),
+        "image_size": image_size,
         "negative_description": negative_description,
         "text_guidance_scale": text_guidance_scale,
         "outline": outline.model_dump() if outline else None,

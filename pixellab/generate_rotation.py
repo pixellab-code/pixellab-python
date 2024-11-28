@@ -17,60 +17,56 @@ class GenerateRotationResponse(BaseModel):
     image: Base64Image
 
 
-@validate_call(config=dict(arbitrary_types_allowed=True))
 def generate_rotation(
     client: Any,
-    image_size: ImageSize = Field(..., description="Size of the generated image"),
-    from_image: PIL.Image.Image = Field(description="Reference image to rotate"),
-    image_guidance_scale: float = Field(
-        default=7.5,
-        ge=1.0,
-        le=20.0,
-        description="How closely to follow the reference image",
-    ),
-    from_view: Optional[CameraView] = Field(
-        default=None, description="From camera view angle"
-    ),
-    to_view: Optional[CameraView] = Field(
-        default=None, description="To camera view angle"
-    ),
-    from_direction: Optional[Direction] = Field(
-        default=None, description="From subject direction"
-    ),
-    to_direction: Optional[Direction] = Field(
-        default=None, description="From subject direction"
-    ),
-    isometric: bool = Field(default=False, description="Generate in isometric view"),
-    oblique_projection: bool = Field(
-        default=False, description="Generate in oblique projection"
-    ),
-    init_image: Optional[PIL.Image.Image] = Field(
-        default=None, description="Initial image to start from"
-    ),
-    init_image_strength: int = Field(
-        default=0,
-        ge=0,
-        le=1000,
-        description="Strength of the initial image influence",
-    ),
-    mask_image: Optional[PIL.Image.Image] = Field(
-        default=None,
-        description="Inpainting / mask image (black and white image, where the white is where the model should inpaint)",
-    ),
-    color_image: Optional[PIL.Image.Image] = Field(
-        default=None,
-        description="Forced color palette, 64x64 image containing colors used for palette",
-    ),
-    seed: int = Field(default=0, description="Seed decides the starting noise"),
+    image_size: ImageSize,
+    from_image: PIL.Image.Image,
+    image_guidance_scale: float = 7.5,
+    from_view: Optional[CameraView] = None,
+    to_view: Optional[CameraView] = None,
+    from_direction: Optional[Direction] = None,
+    to_direction: Optional[Direction] = None,
+    isometric: bool = False,
+    oblique_projection: bool = False,
+    init_image: Optional[PIL.Image.Image] = None,
+    init_image_strength: int = 0,
+    mask_image: Optional[PIL.Image.Image] = None,
+    color_image: Optional[PIL.Image.Image] = None,
+    seed: int = 0,
 ) -> GenerateRotationResponse:
-    """Generate a rotated version of an image."""
+    """Generate a rotated version of an image.
+
+    Args:
+        client: The PixelLab client instance
+        image_size: Size of the generated image
+        from_image: Reference image to rotate
+        image_guidance_scale: How closely to follow the reference image (1.0-20.0)
+        from_view: From camera view angle
+        to_view: To camera view angle
+        from_direction: From subject direction
+        to_direction: To subject direction
+        isometric: Generate in isometric view
+        oblique_projection: Generate in oblique projection
+        init_image: Initial image to start from
+        init_image_strength: Strength of the initial image influence (0-1000)
+        mask_image: Inpainting mask (black and white image, white is where to inpaint)
+        color_image: Forced color palette (64x64 image containing colors)
+        seed: Seed for deterministic generation
+
+    Returns:
+        GenerateRotationResponse containing the generated image
+
+    Raises:
+        ValueError: If authentication fails or validation errors occur
+        requests.exceptions.HTTPError: For other HTTP-related errors
+    """
     init_image = Base64Image.from_pil_image(init_image) if init_image else None
     mask_image = Base64Image.from_pil_image(mask_image) if mask_image else None
     from_image = Base64Image.from_pil_image(from_image)
     color_image = Base64Image.from_pil_image(color_image) if color_image else None
 
     request_data = {
-        "image_size": image_size.model_dump(),
+        "image_size": image_size,
         "image_guidance_scale": image_guidance_scale,
         "from_view": from_view,
         "to_view": to_view,
@@ -92,6 +88,7 @@ def generate_rotation(
             headers=client.headers(),
             json=request_data,
         )
+        print(response)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
         if response.status_code == 401:
