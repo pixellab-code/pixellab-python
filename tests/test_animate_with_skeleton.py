@@ -20,7 +20,7 @@ def test_animate_with_skeleton():
     with open(skeleton_points_dir / "walk.json", "r") as file:
         skeleton_keypoints = json.load(file)["pose_keypoints"]
 
-    animation_images = [reference_image, None, None, None]
+    inpainting_images = [reference_image, None, None, None]
     mask_images = [freeze_mask, None, None, None]
 
     response = client.animate_with_skeleton(
@@ -28,7 +28,7 @@ def test_animate_with_skeleton():
         direction="south",
         image_size={"width": 16, "height": 16},
         reference_image=reference_image,
-        animation_images=animation_images,
+        inpainting_images=inpainting_images,
         mask_images=mask_images,
         skeleton_keypoints=skeleton_keypoints,
     )

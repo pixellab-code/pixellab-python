@@ -36,7 +36,7 @@ def animate_with_skeleton(
     init_images: Optional[list[PIL.Image.Image]] = None,
     init_image_strength: int = 0,
     reference_image: Optional[PIL.Image.Image] = None,
-    animation_images: Optional[list[Optional[PIL.Image.Image]]] = None,
+    inpainting_images: Optional[list[Optional[PIL.Image.Image]]] = None,
     mask_images: Optional[list[Optional[PIL.Image.Image]]] = None,
     color_image: Optional[PIL.Image.Image] = None,
     seed: int = 0,
@@ -56,7 +56,7 @@ def animate_with_skeleton(
         init_images: Initial images to start from
         init_image_strength: Strength of the initial image influence (0-1000)
         reference_image: Reference image for style guidance
-        animation_images: Images used for showing the model with connected skeleton
+        inpainting_images: Images used for showing the model with connected skeleton
         mask_images: Inpainting masks (black and white images, where white is where to inpaint)
         color_image: Forced color palette
         seed: Seed for deterministic generation
@@ -76,9 +76,9 @@ def animate_with_skeleton(
     reference_image = (
         Base64Image.from_pil_image(reference_image) if reference_image else None
     )
-    animation_images = (
-        [Base64Image.from_pil_image(img) if img else None for img in animation_images]
-        if animation_images
+    inpainting_images = (
+        [Base64Image.from_pil_image(img) if img else None for img in inpainting_images]
+        if inpainting_images
         else None
     )
     mask_images = (
@@ -102,9 +102,9 @@ def animate_with_skeleton(
         "init_image_strength": init_image_strength,
         "skeleton_keypoints": skeleton_keypoints,
         "reference_image": reference_image.model_dump() if reference_image else None,
-        "animation_images": (
-            [img.model_dump() if img else None for img in animation_images]
-            if animation_images
+        "inpainting_images": (
+            [img.model_dump() if img else None for img in inpainting_images]
+            if inpainting_images
             else None
         ),
         "mask_images": (
