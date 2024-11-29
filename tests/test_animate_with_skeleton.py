@@ -8,7 +8,7 @@ import PIL.Image
 import pixellab
 
 
-def test_generate_animation_skeleton():
+def test_animate_with_skeleton():
     client = pixellab.Client.from_env_file(".env.development.secrets")
 
     images_dir = Path("tests") / "images"
@@ -23,7 +23,7 @@ def test_generate_animation_skeleton():
     animation_images = [reference_image, None, None, None]
     mask_images = [freeze_mask, None, None, None]
 
-    response = client.generate_animation_skeleton(
+    response = client.animate_with_skeleton(
         view="side",
         direction="south",
         image_size={"width": 16, "height": 16},

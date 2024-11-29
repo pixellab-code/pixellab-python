@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 import PIL.Image
 import requests
-from pydantic import BaseModel, Field, validate_call
+from pydantic import BaseModel
 
 from .models import Base64Image, ImageSize
 from .types import CameraView, Detail, Direction, Outline, Shading

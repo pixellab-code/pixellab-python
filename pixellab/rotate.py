@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 import PIL.Image
 import requests
-from pydantic import BaseModel, Field, validate_call
+from pydantic import BaseModel
 
 from .models import Base64Image, ImageSize
 from .types import CameraView, Direction
@@ -13,11 +13,11 @@ if TYPE_CHECKING:
     from .client import PixelLabClient
 
 
-class GenerateRotationResponse(BaseModel):
+class RotateResponse(BaseModel):
     image: Base64Image
 
 
-def generate_rotation(
+def rotate(
     client: Any,
     image_size: ImageSize,
     from_image: PIL.Image.Image,
@@ -33,7 +33,7 @@ def generate_rotation(
     mask_image: Optional[PIL.Image.Image] = None,
     color_image: Optional[PIL.Image.Image] = None,
     seed: int = 0,
-) -> GenerateRotationResponse:
+) -> RotateResponse:
     """Generate a rotated version of an image.
 
     Args:
@@ -84,7 +84,7 @@ def generate_rotation(
 
     try:
         response = requests.post(
-            f"{client.base_url}/generate-rotation",
+            f"{client.base_url}/rotate",
             headers=client.headers(),
             json=request_data,
         )
@@ -98,4 +98,4 @@ def generate_rotation(
             raise ValueError(error_detail)
         raise
 
-    return GenerateRotationResponse(**response.json())
+    return RotateResponse(**response.json())

@@ -7,14 +7,14 @@ import PIL.Image
 import pixellab
 
 
-def test_generate_rotation():
+def test_rotate():
     client = pixellab.Client.from_env_file(".env.development.secrets")
 
     images_dir = Path("tests") / "images"
     reference_image = PIL.Image.open(images_dir / "boy.png").resize((16, 16))
     init_image = reference_image
 
-    response = client.generate_rotation(
+    response = client.rotate(
         from_direction="south",
         from_view="side",
         to_direction="east",

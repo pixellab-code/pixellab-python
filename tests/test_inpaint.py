@@ -7,14 +7,14 @@ import PIL.Image
 import pixellab
 
 
-def test_generate_inpainting():
+def test_inpaint():
     client = pixellab.Client.from_env_file(".env.development.secrets")
 
     images_dir = Path("tests") / "images"
     inpainting_image = PIL.Image.open(images_dir / "boy.png").resize((16, 16))
     mask_image = PIL.Image.open(images_dir / "mask.png").resize((16, 16))
 
-    response = client.generate_inpainting(
+    response = client.inpaint(
         description="boy with wings",
         image_size={"width": 16, "height": 16},
         no_background=True,

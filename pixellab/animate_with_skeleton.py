@@ -19,11 +19,11 @@ class SkeletonFrame(TypedDict):
     keypoints: list[Keypoint]
 
 
-class GenerateAnimationSkeletonResponse(BaseModel):
+class AnimateWithSkeletonResponse(BaseModel):
     images: list[Base64Image]
 
 
-def generate_animation_skeleton(
+def animate_with_skeleton(
     client: Any,
     image_size: ImageSize,
     skeleton_keypoints: list[SkeletonFrame],
@@ -40,7 +40,7 @@ def generate_animation_skeleton(
     mask_images: Optional[list[Optional[PIL.Image.Image]]] = None,
     color_image: Optional[PIL.Image.Image] = None,
     seed: int = 0,
-) -> GenerateAnimationSkeletonResponse:
+) -> AnimateWithSkeletonResponse:
     """Generate an animation using skeleton points.
 
     Args:
@@ -62,7 +62,7 @@ def generate_animation_skeleton(
         seed: Seed for deterministic generation
 
     Returns:
-        GenerateAnimationSkeletonResponse containing the generated images
+        AnimateWithSkeletonResponse containing the generated images
 
     Raises:
         ValueError: If authentication fails or validation errors occur
@@ -118,7 +118,7 @@ def generate_animation_skeleton(
 
     try:
         response = requests.post(
-            f"{client.base_url}/generate-animation-skeleton",
+            f"{client.base_url}/animate-with-skeleton",
             headers=client.headers(),
             json=request_data,
         )
@@ -132,4 +132,4 @@ def generate_animation_skeleton(
             raise ValueError(error_detail)
         raise
 
-    return GenerateAnimationSkeletonResponse(**response.json())
+    return AnimateWithSkeletonResponse(**response.json())

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 import PIL.Image
 import requests
-from pydantic import BaseModel, Field, validate_call
+from pydantic import BaseModel
 
 from .models import Base64Image, ImageSize
 from .types import CameraView, Detail, Direction, Outline, Shading
@@ -13,11 +13,11 @@ if TYPE_CHECKING:
     from .client import PixelLabClient
 
 
-class GenerateInpaintingResponse(BaseModel):
+class InpaintResponse(BaseModel):
     image: Base64Image
 
 
-def generate_inpainting(
+def inpaint(
     client: Any,
     description: str,
     image_size: ImageSize,
@@ -38,7 +38,7 @@ def generate_inpainting(
     init_image_strength: int = 0,
     color_image: Optional[PIL.Image.Image] = None,
     seed: int = 0,
-) -> GenerateInpaintingResponse:
+) -> InpaintResponse:
     """Generate an inpainted image.
 
     Args:
@@ -64,7 +64,7 @@ def generate_inpainting(
         seed: Seed for deterministic generation
 
     Returns:
-        GenerateInpaintingResponse containing the generated image
+        InpaintResponse containing the generated image
 
     Raises:
         ValueError: If authentication fails or validation errors occur
@@ -98,7 +98,7 @@ def generate_inpainting(
     }
     try:
         response = requests.post(
-            f"{client.base_url}/generate-inpainting",
+            f"{client.base_url}/inpaint",
             headers=client.headers(),
             json=request_data,
         )
@@ -112,4 +112,4 @@ def generate_inpainting(
             raise ValueError(error_detail)
         raise
 
-    return GenerateInpaintingResponse(**response.json())
+    return InpaintResponse(**response.json())

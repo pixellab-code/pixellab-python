@@ -12,7 +12,7 @@ from .settings import settings
 class PixelLabClient(BaseModel):
     secret: str
     base_url: str = "https://api.pixellab.ai/v1"
-    
+
     @classmethod
     def from_env(cls) -> PixelLabClient:
         return cls(**settings(env_file=None).model_dump(exclude_none=True))
@@ -29,8 +29,8 @@ class PixelLabClient(BaseModel):
     def headers(self):
         return {"Authorization": f"Bearer {self.secret}"}
 
-    from .generate_animation_skeleton import generate_animation_skeleton
+    from .animate_with_skeleton import animate_with_skeleton
     from .generate_image_bitforge import generate_image_bitforge
     from .generate_image_pixflux import generate_image_pixflux
-    from .generate_inpainting import generate_inpainting
-    from .generate_rotation import generate_rotation
+    from .inpaint import inpaint
+    from .rotate import rotate

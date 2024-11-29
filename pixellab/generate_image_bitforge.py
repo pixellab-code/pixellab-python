@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from enum import Enum
-from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict
+from typing import TYPE_CHECKING, Any, Optional
 
 import PIL.Image
 import requests
@@ -13,8 +12,10 @@ from .types import CameraView, Detail, Direction, Outline, Shading
 if TYPE_CHECKING:
     from .client import PixelLabClient
 
+
 class GenerateImageBitForgeResponse(BaseModel):
     image: Base64Image
+
 
 def generate_image_bitforge(
     client: Any,
