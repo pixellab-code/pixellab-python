@@ -96,7 +96,6 @@ def generate_inpainting(
         "color_image": color_image.model_dump() if color_image else None,
         "seed": seed,
     }
-
     try:
         response = requests.post(
             f"{client.base_url}/generate-inpainting",

@@ -13,10 +13,8 @@ from .types import CameraView, Detail, Direction, Outline, Shading
 if TYPE_CHECKING:
     from .client import PixelLabClient
 
-
 class GenerateImageBitForgeResponse(BaseModel):
     image: Base64Image
-
 
 def generate_image_bitforge(
     client: Any,

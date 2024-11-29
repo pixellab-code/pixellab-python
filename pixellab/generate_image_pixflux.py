@@ -86,8 +86,6 @@ def generate_image_pixflux(
         "seed": seed,
     }
 
-    print(request_data)
-
     try:
         response = requests.post(
             f"{client.base_url}/generate-image-pixflux",

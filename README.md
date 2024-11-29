@@ -38,10 +38,7 @@ client = pixellab.Client.from_env_file(".env.development.secrets")
 # create image
 response = client.generate_image_pixflux(
     description="cute dragon",
-    image_size=dict(
-        height=256,
-        width=256,
-    ),
+    image_size = {"width": 64, "height": 64},
 )
 
 response.image.pil_image()

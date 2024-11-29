@@ -21,11 +21,11 @@ def generate_rotation(
     client: Any,
     image_size: ImageSize,
     from_image: PIL.Image.Image,
+    from_view: CameraView,
+    to_view: CameraView,
+    from_direction: Direction,
+    to_direction: Direction,
     image_guidance_scale: float = 3.0,
-    from_view: Optional[CameraView] = None,
-    to_view: Optional[CameraView] = None,
-    from_direction: Optional[Direction] = None,
-    to_direction: Optional[Direction] = None,
     isometric: bool = False,
     oblique_projection: bool = False,
     init_image: Optional[PIL.Image.Image] = None,
@@ -88,7 +88,6 @@ def generate_rotation(
             headers=client.headers(),
             json=request_data,
         )
-        print(response)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
         if response.status_code == 401:
