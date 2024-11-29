@@ -1,6 +1,16 @@
 # Pixel Lab Python SDK
 
-Python client library for Pixel Lab. Designed to simplify and exemplify interaction with the developer API.
+[Pixel Lab](http://www.pixellab.ai) is a pixel art extension for Aseprite designed to provide artists and game developers with controllable AI tools that integrate into their workflow. This Python client simplifies interaction with the [Pixel Lab developer API](http://api.pixellab.ai/v1).
+
+For questions or discussions, feel free to join us at [Discord](https://discord.gg/pBeyTBF8T7).
+
+## Supported models
+
+- **Generate Image Bitforge**: Apply custom art styles using reference images.
+- **Generate Image Pixflux**: Generate pixel art from text descriptions.
+- **Animate (skeleton)**: Generate 4 frames of an animation from skeleton poses.
+- **Inpaint**: Edit and modify existing pixel art.
+- **Rotate**: Rotate an object or a character.
 
 ## Install
 
