@@ -37,7 +37,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          $HOME/.local/bin/poetry run pytest
+          $HOME/.local/bin/poetry run pytest -x
 
       - name: Build wheels
         run: |

@@ -4,10 +4,7 @@ import pixellab
 
 
 def test_incorrect_secret_raises_meaningful_error():
-    client = pixellab.Client(
-        secret="clearly wrong secret",
-        base_url="http://localhost:8000/v1",
-    )
+    client = pixellab.Client(secret="clearly wrong secret")
 
     with pytest.raises(ValueError) as exc_info:
         client.generate_image_pixflux(
