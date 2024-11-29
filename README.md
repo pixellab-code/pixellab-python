@@ -1,18 +1,22 @@
 # Pixel Lab Python SDK
 
-[Pixel Lab](http://www.pixellab.ai) is a pixel art extension for Aseprite designed to provide artists and game developers with controllable AI tools that integrate into their workflow. This Python client simplifies interaction with the [Pixel Lab developer API](http://api.pixellab.ai/v1).
+This Python client simplifies interaction with the [Pixel Lab developer API](http://api.pixellab.ai/v1).
 
-For questions or discussions, feel free to join us at [Discord](https://discord.gg/pBeyTBF8T7).
+Create characters and items, animate them, and generate rotated views. Useful for game development and other pixel art projects.
 
-## Supported models
+For questions or discussions, join us on [Discord](https://discord.gg/pBeyTBF8T7).
 
-- **Generate Image Bitforge**: Apply custom art styles using reference images.
-- **Generate Image Pixflux**: Generate pixel art from text descriptions.
-- **Animate (skeleton)**: Generate 4 frames of an animation from skeleton poses.
-- **Inpaint**: Edit and modify existing pixel art.
-- **Rotate**: Rotate an object or a character.
+## Features
 
-## Install
+- **Generate Image (Pixflux)**: Create characters, items, and environments from text descriptions
+- **Generate Image (Bitforge)**: Use reference images to match a specific art style
+- **Animation**: Animate bi-pedal and quadrupedal characters and monsters with skeleton-based animations
+- **Inpainting**: Edit existing pixel art
+- **Rotation**: Generate rotated views of characters and objects
+
+With much more functionality coming soon.
+
+## Installation
 
 Use your preferred package manager:
 
@@ -44,16 +48,24 @@ response = client.generate_image_pixflux(
 response.image.pil_image()
 ```
 
+See more client usage examples in the [Pixel Lab API Docs](https://api.pixellab.ai/v1/docs).
+
 ## Development
 
-### Install dependencies
+### Install Dependencies
 
 ```bash
 poetry install
 ```
 
-### Run tests
+### Run Tests
 
 ```bash
 poetry run pytest -s
 ```
+
+## Support
+
+- Documentation: [api.pixellab.ai/v1/docs](https://api.pixellab.ai/v1/docs)
+- Discord Community: [Join us](https://discord.gg/pBeyTBF8T7)
+- Issues: Please report any SDK issues on our GitHub repository
