@@ -17,7 +17,7 @@ def test_generate_image_pixflux():
 
     response = client.generate_image_pixflux(
         description="cute dragon boy",
-        image_size={"width": 32, "height": 32},
+        image_size=dict(height=32, width=32),
         init_image=init_image,
         init_image_strength=250,
         view="low top-down",
