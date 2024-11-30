@@ -1,5 +1,9 @@
 # Pixel Lab Python SDK
 
+[![Discord](https://img.shields.io/discord/1163883111474847744?label=Discord&logo=discord&logoColor=white)](https://discord.gg/pBeyTBF8T7)
+[![PyPI version](https://badge.fury.io/py/pixellab.svg)](https://badge.fury.io/py/pixellab)
+[![Python](https://img.shields.io/pypi/pyversions/pixellab.svg)](https://pypi.org/project/pixellab/)
+
 This Python client simplifies interaction with the [Pixel Lab developer API](http://api.pixellab.ai/v1).
 
 Create characters and items, animate them, and generate rotated views. Useful for game development and other pixel art projects.
