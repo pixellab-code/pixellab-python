@@ -7,6 +7,7 @@ import requests
 from pydantic import BaseModel
 
 from .settings import settings
+from .get_credits import get_credits, CreditsResponse
 
 
 class PixelLabClient(BaseModel):
@@ -34,3 +35,4 @@ class PixelLabClient(BaseModel):
     from .generate_image_pixflux import generate_image_pixflux
     from .inpaint import inpaint
     from .rotate import rotate
+    from .get_credits import get_credits

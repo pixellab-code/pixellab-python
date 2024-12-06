@@ -36,7 +36,7 @@ def generate_image_bitforge(
     oblique_projection: bool = False,
     coverage_percentage: Optional[float] = None,
     init_image: Optional[PIL.Image.Image] = None,
-    init_image_strength: int = 0,
+    init_image_strength: int = 300,
     style_image: Optional[PIL.Image.Image] = None,
     inpainting_image: Optional[PIL.Image.Image] = None,
     mask_image: Optional[PIL.Image.Image] = None,

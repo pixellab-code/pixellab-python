@@ -34,7 +34,7 @@ def animate_with_skeleton(
     isometric: bool = False,
     oblique_projection: bool = False,
     init_images: Optional[list[PIL.Image.Image]] = None,
-    init_image_strength: int = 0,
+    init_image_strength: int = 300,
     reference_image: Optional[PIL.Image.Image] = None,
     inpainting_images: Optional[list[Optional[PIL.Image.Image]]] = None,
     mask_images: Optional[list[Optional[PIL.Image.Image]]] = None,

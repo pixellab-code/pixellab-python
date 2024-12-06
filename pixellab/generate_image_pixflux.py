@@ -32,7 +32,7 @@ def generate_image_pixflux(
     no_background: bool = False,
     coverage_percentage: Optional[float] = None,
     init_image: Optional[PIL.Image.Image] = None,
-    init_image_strength: int = 0,
+    init_image_strength: int = 300,
     color_image: Optional[PIL.Image.Image] = None,
     seed: int = 0,
 ) -> GenerateImagePixFluxResponse:
