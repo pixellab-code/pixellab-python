@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import requests
 from pydantic import BaseModel
@@ -9,13 +9,14 @@ if TYPE_CHECKING:
     from .client import PixelLabClient
 
 
-class CreditsResponse(BaseModel):
-    credits: float
+class BalanceResponse(BaseModel):
+    type: Literal["usd"] = "usd"
+    usd: float
 
 
-def get_credits(
+def get_balance(
     client: Any,
-) -> CreditsResponse:
+) -> BalanceResponse:
     """Get the current credit balance.
 
     Args:
@@ -30,7 +31,7 @@ def get_credits(
     """
     try:
         response = requests.get(
-            f"{client.base_url}/credits",
+            f"{client.base_url}/balance",
             headers=client.headers(),
         )
         response.raise_for_status()
@@ -40,4 +41,4 @@ def get_credits(
             raise ValueError(error_detail)
         raise
 
-    return CreditsResponse(**response.json()) 
+    return BalanceResponse(**response.json())
