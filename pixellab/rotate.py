@@ -7,15 +7,18 @@ import requests
 from pydantic import BaseModel
 
 from .models import Base64Image, ImageSize
-from .types import CameraView, Direction
+from .types import Literal, CameraView, Direction
 
 if TYPE_CHECKING:
     from .client import PixelLabClient
 
+class Usage(BaseModel):
+    type: Literal["usd"] = "usd"
+    usd: float
 
 class RotateResponse(BaseModel):
     image: Base64Image
-
+    usage: Usage
 
 def rotate(
     client: Any,

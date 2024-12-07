@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, TypedDict
+from typing import TYPE_CHECKING, Any, List, Optional, TypedDict, Literal
 
 import PIL.Image
 import requests
@@ -18,10 +18,13 @@ class SkeletonFrame(TypedDict):
 
     keypoints: list[Keypoint]
 
+class Usage(BaseModel):
+    type: Literal["usd"] = "usd"
+    usd: float
 
 class AnimateWithSkeletonResponse(BaseModel):
     images: list[Base64Image]
-
+    usage: Usage
 
 def animate_with_skeleton(
     client: Any,
