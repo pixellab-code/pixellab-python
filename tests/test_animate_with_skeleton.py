@@ -20,8 +20,8 @@ def test_animate_with_skeleton():
     with open(skeleton_points_dir / "walk.json", "r") as file:
         skeleton_keypoints = json.load(file)["pose_keypoints"]
 
-    inpainting_images = [reference_image, None, None, None]
-    mask_images = [freeze_mask, None, None, None]
+    inpainting_images = [reference_image, None, None]
+    mask_images = [freeze_mask, None, None]
 
     response = client.animate_with_skeleton(
         view="side",
@@ -33,7 +33,7 @@ def test_animate_with_skeleton():
         skeleton_keypoints=skeleton_keypoints,
     )
 
-    assert len(response.images) == 4
+    assert len(response.images) == 3
     for i, image in enumerate(response.images):
         pil_image = image.pil_image()
         assert isinstance(pil_image, PIL.Image.Image)
