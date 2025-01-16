@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Literal
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 import PIL.Image
 import requests
@@ -12,13 +12,16 @@ from .types import CameraView, Detail, Direction, Outline, Shading
 if TYPE_CHECKING:
     from .client import PixelLabClient
 
+
 class Usage(BaseModel):
     type: Literal["usd"] = "usd"
     usd: float
 
+
 class GenerateImagePixFluxResponse(BaseModel):
     image: Base64Image
     usage: Usage
+
 
 def generate_image_pixflux(
     client: Any,
@@ -75,9 +78,9 @@ def generate_image_pixflux(
         "image_size": image_size,
         "negative_description": negative_description,
         "text_guidance_scale": text_guidance_scale,
-        "outline": outline.model_dump() if outline else None,
-        "shading": shading.model_dump() if shading else None,
-        "detail": detail.model_dump() if detail else None,
+        "outline": outline,
+        "shading": shading,
+        "detail": detail,
         "view": view,
         "direction": direction,
         "isometric": isometric,
