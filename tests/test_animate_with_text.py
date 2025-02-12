@@ -12,7 +12,11 @@ def test_animate_with_text():
 
     images_dir = Path("tests") / "images"
     reference_image = PIL.Image.open(images_dir / "boy64.png").resize((64, 64))
+    freeze_mask = PIL.Image.open(images_dir / "freeze_mask.png").resize(
+        (64, 64), resample=PIL.Image.Resampling.NEAREST
+    )
 
+    # Generates a walk animation with the reference image frozen as the first frame.
     response = client.animate_with_text(
         image_size={"width": 64, "height": 64},
         description="boy",
@@ -22,6 +26,8 @@ def test_animate_with_text():
         direction="south",
         negative_description="",
         n_frames=4,
+        inpainting_images=[reference_image, None, None, None],
+        mask_images=[freeze_mask, None, None, None],
     )
 
     assert len(response.images) == 4

@@ -127,7 +127,6 @@ def animate_with_text(
             headers=client.headers(),
             json=request_data,
         )
-        print(response.request.body)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
         if response.status_code == 401:
