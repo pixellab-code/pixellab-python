@@ -13,17 +13,14 @@ def test_animate_with_text():
     images_dir = Path("tests") / "images"
     reference_image = PIL.Image.open(images_dir / "boy64.png").resize((64, 64))
 
-    inpainting_images = [None, None, None, None]
-
     response = client.animate_with_text(
-        character="pixel art boy",
-        negative_description="",
-        action="walking",
+        image_size={"width": 64, "height": 64},
+        description="boy",
+        action="walk",
+        reference_image=reference_image,
         view="side",
         direction="south",
-        image_size={"width": 64, "height": 64},
-        selected_reference_image=reference_image,
-        inpainting_images=inpainting_images,
+        negative_description="",
         n_frames=4,
     )
 
@@ -33,6 +30,7 @@ def test_animate_with_text():
         assert isinstance(pil_image, PIL.Image.Image)
         assert pil_image.size == (64, 64)
 
+    # Save results for visual inspection
     results_dir = Path("tests") / "results"
     results_dir.mkdir(exist_ok=True)
 
