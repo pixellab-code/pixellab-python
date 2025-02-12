@@ -13,7 +13,8 @@ For questions or discussions, join us on [Discord](https://discord.gg/pBeyTBF8T7
 
 - **Generate Image (Pixflux)**: Create characters, items, and environments from text descriptions
 - **Generate Image (Bitforge)**: Use reference images to match a specific art style
-- **Animation**: Animate bi-pedal and quadrupedal characters and monsters with skeleton-based animations
+- **Animation with Skeletons**: Animate bi-pedal and quadrupedal characters and monsters with skeleton-based animations
+- **Animation with Text**: Animate with text prompts
 - **Inpainting**: Edit existing pixel art
 - **Rotation**: Generate rotated views of characters and objects
 
