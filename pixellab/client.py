@@ -26,8 +26,9 @@ class PixelLabClient(BaseModel):
         return {"Authorization": f"Bearer {self.secret}"}
 
     from .animate_with_skeleton import animate_with_skeleton
+    from .animate_with_text import animate_with_text
     from .generate_image_bitforge import generate_image_bitforge
     from .generate_image_pixflux import generate_image_pixflux
+    from .get_balance import get_balance
     from .inpaint import inpaint
     from .rotate import rotate
-    from .get_balance import get_balance
