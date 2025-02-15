@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Literal
+from typing import TYPE_CHECKING, Any, Optional, Literal, Union, Dict
 
 import PIL.Image
 import requests
@@ -12,18 +12,21 @@ from .types import CameraView, Detail, Direction, Outline, Shading
 if TYPE_CHECKING:
     from .client import PixelLabClient
 
+
 class Usage(BaseModel):
     type: Literal["usd"] = "usd"
     usd: float
+
 
 class InpaintResponse(BaseModel):
     image: Base64Image
     usage: Usage
 
+
 def inpaint(
     client: Any,
     description: str,
-    image_size: ImageSize,
+    image_size: Union[ImageSize, Dict[str, int]],
     inpainting_image: PIL.Image.Image,
     mask_image: PIL.Image.Image,
     negative_description: str = "",

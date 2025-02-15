@@ -21,7 +21,7 @@ def test_generate_image_bitforge():
 
     response = client.generate_image_bitforge(
         description="boy with wings",
-        image_size=ImageSize(width=16, height=16),
+        image_size=dict(width=16, height=16),
         no_background=True,
         style_image=style_image,
         inpainting_image=inpainting_image,

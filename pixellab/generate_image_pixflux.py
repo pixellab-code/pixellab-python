@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union, Dict
 
 import PIL.Image
 import requests
@@ -26,7 +26,7 @@ class GenerateImagePixFluxResponse(BaseModel):
 def generate_image_pixflux(
     client: Any,
     description: str,
-    image_size: ImageSize,
+    image_size: Union[ImageSize, Dict[str, int]],
     negative_description: str = "",
     text_guidance_scale: float = 8,
     outline: Optional[Outline] = None,

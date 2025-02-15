@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union, Dict
 
 import PIL.Image
 import requests
@@ -12,17 +12,20 @@ from .types import Literal, CameraView, Direction
 if TYPE_CHECKING:
     from .client import PixelLabClient
 
+
 class Usage(BaseModel):
     type: Literal["usd"] = "usd"
     usd: float
+
 
 class RotateResponse(BaseModel):
     image: Base64Image
     usage: Usage
 
+
 def rotate(
     client: Any,
-    image_size: ImageSize,
+    image_size: Union[ImageSize, Dict[str, int]],
     from_image: PIL.Image.Image,
     from_view: CameraView,
     to_view: CameraView,

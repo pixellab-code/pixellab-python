@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Literal
+from typing import TYPE_CHECKING, Any, Optional, Literal, Union, Dict
 
 import PIL.Image
 import requests
@@ -12,18 +12,21 @@ from .types import CameraView, Detail, Direction, Outline, Shading
 if TYPE_CHECKING:
     from .client import PixelLabClient
 
+
 class Usage(BaseModel):
     type: Literal["usd"] = "usd"
     usd: float
+
 
 class GenerateImageBitForgeResponse(BaseModel):
     image: Base64Image
     usage: Usage
 
+
 def generate_image_bitforge(
     client: Any,
     description: str,
-    image_size: ImageSize,
+    image_size: Union[ImageSize, Dict[str, int]],
     negative_description: str = "",
     text_guidance_scale: float = 3.0,
     extra_guidance_scale: float = 3.0,
