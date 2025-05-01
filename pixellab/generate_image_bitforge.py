@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Literal, Union, Dict
+from typing import TYPE_CHECKING, Any, TypedDict, Optional, Literal, Union, Dict
 
 import PIL.Image
 import requests
 from pydantic import BaseModel
 
-from .models import Base64Image, ImageSize
+from .models import Base64Image, ImageSize, Keypoint
+
 from .types import CameraView, Detail, Direction, Outline, Shading
 
 if TYPE_CHECKING:
@@ -17,6 +18,9 @@ class Usage(BaseModel):
     type: Literal["usd"] = "usd"
     usd: float
 
+class SkeletonFrame(TypedDict):
+    """A single frame of skeleton keypoints."""
+    keypoints: list[Keypoint]
 
 class GenerateImageBitForgeResponse(BaseModel):
     image: Base64Image
@@ -30,6 +34,7 @@ def generate_image_bitforge(
     negative_description: str = "",
     text_guidance_scale: float = 3.0,
     extra_guidance_scale: float = 3.0,
+    skeleton_guidance_scale: float = 1.0,
     style_strength: float = 0.0,
     no_background: bool = False,
     seed: int = 0,
@@ -46,6 +51,7 @@ def generate_image_bitforge(
     style_image: Optional[PIL.Image.Image] = None,
     inpainting_image: Optional[PIL.Image.Image] = None,
     mask_image: Optional[PIL.Image.Image] = None,
+    skeleton_keypoints: Optional[SkeletonFrame] = None,
     color_image: Optional[PIL.Image.Image] = None,
 ) -> GenerateImageBitForgeResponse:
     """Generate an image using BitForge.
@@ -112,6 +118,8 @@ def generate_image_bitforge(
         "inpainting_image": inpainting_image.model_dump() if inpainting_image else None,
         "mask_image": mask_image.model_dump() if mask_image else None,
         "color_image": color_image.model_dump() if color_image else None,
+        "skeleton_keypoints": skeleton_keypoints if skeleton_keypoints else None,
+        "skeleton_guidance_scale": skeleton_guidance_scale,
         "seed": seed,
     }
 
