@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pixellab"
-version = "1.0.3"
+version = "1.0.4"
 description = ""
 authors = ["PixelLab"]
 readme = "README.md"
