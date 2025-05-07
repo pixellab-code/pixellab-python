@@ -5,6 +5,7 @@ from pathlib import Path
 import PIL.Image
 
 import pixellab
+from pixellab.models.keypoint import SkeletonLabel
 
 
 def test_estimate_skeleton():
@@ -20,7 +21,7 @@ def test_estimate_skeleton():
     assert isinstance(response.keypoints, list)
     assert len(response.keypoints) == 18
     for keypoint in response.keypoints:
-        assert isinstance(keypoint.x, float)
-        assert isinstance(keypoint.y, float)
-        assert isinstance(keypoint.label, str)
-        assert isinstance(keypoint.z_index, int)
+        assert isinstance(keypoint["x"], float)
+        assert isinstance(keypoint["y"], float)
+        assert isinstance(keypoint["label"], str)
+        assert isinstance(keypoint["z_index"], float)

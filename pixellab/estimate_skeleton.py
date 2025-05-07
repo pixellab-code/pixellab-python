@@ -6,7 +6,7 @@ import PIL.Image
 import requests
 from pydantic import BaseModel
 
-from .models import Base64Image, ImageSize
+from .models import Base64Image, Keypoint
 from .types import CameraView, Direction, Literal
 
 if TYPE_CHECKING:
@@ -16,13 +16,6 @@ if TYPE_CHECKING:
 class Usage(BaseModel):
     type: Literal["usd"] = "usd"
     usd: float
-
-
-class Keypoint(BaseModel):
-    x: float
-    y: float
-    label: str
-    z_index: int
 
 
 class EstimateSkeletonResponse(BaseModel):
