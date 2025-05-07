@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 import PIL.Image
 import requests
 from pydantic import BaseModel
 
 from .models import Base64Image, ImageSize
-from .types import Literal, CameraView, Direction
+from .types import CameraView, Direction, Literal
 
 if TYPE_CHECKING:
     from .client import PixelLabClient
@@ -27,10 +27,12 @@ def rotate(
     client: Any,
     image_size: Union[ImageSize, Dict[str, int]],
     from_image: PIL.Image.Image,
-    from_view: CameraView,
-    to_view: CameraView,
-    from_direction: Direction,
-    to_direction: Direction,
+    from_view: Optional[CameraView] = None,
+    to_view: Optional[CameraView] = None,
+    from_direction: Optional[Direction] = None,
+    to_direction: Optional[Direction] = None,
+    view_change: Optional[int] = None,
+    direction_change: Optional[int] = None,
     image_guidance_scale: float = 3.0,
     isometric: bool = False,
     oblique_projection: bool = False,
@@ -78,6 +80,8 @@ def rotate(
         "to_view": to_view,
         "from_direction": from_direction,
         "to_direction": to_direction,
+        "view_change": view_change,
+        "direction_change": direction_change,
         "isometric": isometric,
         "oblique_projection": oblique_projection,
         "init_image": init_image.model_dump() if init_image else None,
@@ -96,7 +100,10 @@ def rotate(
         )
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
-        if response.status_code == 401:
+        if response.status_code == 400:
+            error_detail = response.json().get("detail", "Unknown error")
+            raise ValueError(error_detail)
+        elif response.status_code == 401:
             error_detail = response.json().get("detail", "Unknown error")
             raise ValueError(error_detail)
         elif response.status_code == 422:
