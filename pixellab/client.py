@@ -27,6 +27,7 @@ class PixelLabClient(BaseModel):
 
     from .animate_with_skeleton import animate_with_skeleton
     from .animate_with_text import animate_with_text
+    from .estimate_skeleton import estimate_skeleton
     from .generate_image_bitforge import generate_image_bitforge
     from .generate_image_pixflux import generate_image_pixflux
     from .get_balance import get_balance
