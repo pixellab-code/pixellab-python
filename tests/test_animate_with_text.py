@@ -11,7 +11,7 @@ def test_animate_with_text():
     client = pixellab.Client.from_env_file(".env.development.secrets")
 
     images_dir = Path("tests") / "images"
-    reference_image = PIL.Image.open(images_dir / "boy64.png").resize((64, 64))
+    reference_image = PIL.Image.open(images_dir / "boy64.png")  # Already 64x64
     freeze_mask = PIL.Image.open(images_dir / "freeze_mask.png").resize(
         (64, 64), resample=PIL.Image.Resampling.NEAREST
     )

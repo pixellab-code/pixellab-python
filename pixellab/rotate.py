@@ -94,7 +94,7 @@ def rotate(
 
     try:
         response = requests.post(
-            f"{client.base_url}/rotate",
+            f"{client.base_url}/v2/rotate",
             headers=client.headers(),
             json=request_data,
         )

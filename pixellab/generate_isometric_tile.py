@@ -18,68 +18,68 @@ class Usage(BaseModel):
     usd: float
 
 
-class GenerateImagePixFluxResponse(BaseModel):
+class GenerateIsometricTileResponse(BaseModel):
     image: Base64Image
     usage: Usage
 
 
-def generate_image_pixflux(
+def generate_isometric_tile(
     client: Any,
     description: str,
     image_size: Union[ImageSize, Dict[str, int]],
-    negative_description: str = "",
     text_guidance_scale: float = 8,
     outline: Optional[Outline] = None,
     shading: Optional[Shading] = None,
     detail: Optional[Detail] = None,
-    view: Optional[CameraView] = None,
-    direction: Optional[Direction] = None,
-    isometric: bool = False,
-    no_background: bool = False,
-    coverage_percentage: Optional[float] = None,
     init_image: Optional[PIL.Image.Image] = None,
     init_image_strength: int = 300,
+    isometric_tile_size: Optional[Literal[16, 32]] = 16,
+    isometric_tile_shape: Literal["thick tile", "thin tile", "block", "reference shape"] = "thick tile",
+    reference_shape: Optional[PIL.Image.Image] = None,
+    reference_shape_strength: int = 300,
     color_image: Optional[PIL.Image.Image] = None,
     seed: int = 0,
-) -> GenerateImagePixFluxResponse:
-    """Generate an image using PixFlux.
+) -> GenerateIsometricTileResponse:
+    """Generate an isometric tile using PixelLab.
 
     Args:
         client: The PixelLab client instance
         description: Text description of the image to generate
-        image_size: Size of the generated image
-        negative_description: Text description of what to avoid in the generated image
+        image_size: Size of the generated image (16x16 to 128x128)
         text_guidance_scale: How closely to follow the text description (1.0-20.0)
-        outline: Outline style reference
-        shading: Shading style reference
-        detail: Detail style reference
-        view: Camera view angle
-        direction: Subject direction
-        isometric: Generate in isometric view
-        no_background: Generate with transparent background
-        coverage_percentage: Percentage of the canvas to cover (0-100)
+        outline: Outline style reference (weakly guiding)
+        shading: Shading style reference (weakly guiding)
+        detail: Detail style reference (weakly guiding)
         init_image: Initial image to start from
-        init_image_strength: Strength of the initial image influence (0-1000)
-        color_image: Forced color palette
+        init_image_strength: Strength of the initial image influence (1-999)
+        isometric_tile_size: Size of the isometric tile (16 or 32)
+        isometric_tile_shape: Shape of the isometric tile
+        reference_shape: Reference image to use for the tile shape
+        reference_shape_strength: Guidance strength for the reference shape (1-999)
+        color_image: Forced color palette image
         seed: Seed for deterministic generation
 
     Returns:
-        GenerateImagePixFluxResponse containing the generated image
+        GenerateIsometricTileResponse containing the generated image
 
     Raises:
         ValueError: If authentication fails or validation errors occur
         requests.exceptions.HTTPError: For other HTTP-related errors
     """
-    init_image = Base64Image.from_pil_image(init_image) if init_image else None
-    color_image = Base64Image.from_pil_image(color_image) if color_image else None
+    # Convert PIL images to Base64Image objects if provided
+    init_image_b64 = Base64Image.from_pil_image(init_image) if init_image else None
+    color_image_b64 = Base64Image.from_pil_image(color_image) if color_image else None
+    reference_shape_b64 = Base64Image.from_pil_image(reference_shape) if reference_shape else None
 
+    # Build request data - matches GenerateIsometricTileRequest model
     request_data = {
         "description": description,
         "image_size": image_size,
-        "negative_description": negative_description,
         "text_guidance_scale": text_guidance_scale,
-        "isometric": isometric,
-        "no_background": no_background,
+        "init_image_strength": init_image_strength,
+        "isometric_tile_size": isometric_tile_size,
+        "isometric_tile_shape": isometric_tile_shape,
+        "reference_shape_strength": reference_shape_strength,
         "seed": seed,
     }
     
@@ -90,19 +90,16 @@ def generate_image_pixflux(
         request_data["shading"] = shading
     if detail:
         request_data["detail"] = detail
-    if view:
-        request_data["view"] = view
-    if direction:
-        request_data["direction"] = direction
-    if init_image:
-        request_data["init_image"] = init_image.model_dump()
-        request_data["init_image_strength"] = init_image_strength
-    if color_image:
-        request_data["color_image"] = color_image.model_dump()
+    if init_image_b64:
+        request_data["init_image"] = init_image_b64.model_dump()
+    if color_image_b64:
+        request_data["color_image"] = color_image_b64.model_dump()
+    if reference_shape_b64:
+        request_data["reference_shape"] = reference_shape_b64.model_dump()
 
     try:
         response = requests.post(
-            f"{client.base_url}/v2/create-image-pixflux",
+            f"{client.base_url}/v2/create-isometric-tile",
             headers=client.headers(),
             json=request_data,
         )
@@ -116,4 +113,4 @@ def generate_image_pixflux(
             raise ValueError(error_detail)
         raise
 
-    return GenerateImagePixFluxResponse(**response.json())
+    return GenerateIsometricTileResponse(**response.json())

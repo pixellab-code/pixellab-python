@@ -28,9 +28,9 @@ def animate_with_text(
     reference_image: PIL.Image.Image,
     view: CameraView = "side",
     direction: Direction = "east",
-    negative_description: Optional[str] = None,
-    text_guidance_scale: float = 7.5,
-    image_guidance_scale: float = 1.5,
+    negative_description: str = "",
+    text_guidance_scale: float = 8.0,
+    image_guidance_scale: float = 1.4,
     n_frames: int = 4,
     start_frame_index: int = 0,
     init_images: Optional[list[Optional[PIL.Image.Image]]] = None,
@@ -86,7 +86,7 @@ def animate_with_text(
     mask_images = (
         [Base64Image.from_pil_image(img) if img else None for img in mask_images]
         if mask_images
-        else None
+        else [None] * 4
     )
 
     color_image = Base64Image.from_pil_image(color_image) if color_image else None
@@ -112,18 +112,16 @@ def animate_with_text(
         "inpainting_images": [
             img.model_dump() if img else None for img in inpainting_images
         ],
-        "mask_images": (
-            [img.model_dump() if img else None for img in mask_images]
-            if mask_images
-            else None
-        ),
+        "mask_images": [
+            img.model_dump() if img else None for img in mask_images
+        ],
         "color_image": color_image.model_dump() if color_image else None,
         "seed": seed,
     }
 
     try:
         response = requests.post(
-            f"{client.base_url}/animate-with-text",
+            f"{client.base_url}/v2/animate-with-text",
             headers=client.headers(),
             json=request_data,
         )

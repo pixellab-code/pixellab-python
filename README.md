@@ -13,12 +13,15 @@ For questions or discussions, join us on [Discord](https://discord.gg/pBeyTBF8T7
 
 - **Generate Image (Pixflux)**: Create characters, items, and environments from text descriptions
 - **Generate Image (Bitforge)**: Use reference images to match a specific art style
-- **Animation with Skeletons**: Animate bi-pedal and quadrupedal characters and monsters with skeleton-based animations
 - **Animation with Text**: Animate with text prompts
+- **Animation with Templates**: Generate animations using pre-made templates for consistent character movements
+- **Animation with Skeletons**: Animate bi-pedal and quadrupedal characters and monsters with skeleton-based animations
+- **Estimate Skeleton**: Estimate skeletons from images
 - **Inpainting**: Edit existing pixel art
 - **Rotation**: Generate rotated views of characters and objects
-
-With much more functionality coming soon.
+- **Generate Tileset**: Create cohesive tilesets for game environments
+- **Generate 4 Rotations**: Generate 4 directional views (north, south, east, west) of characters
+- **Generate 8 Rotations**: Generate 8 directional views including diagonals
 
 ## Installation
 
@@ -50,6 +53,22 @@ response = client.generate_image_pixflux(
 )
 
 response.image.pil_image()
+
+# animate with template
+animation_response = client.animate_with_template(
+    description="wizard character",
+    action="walk",
+    image_size={"width": 64, "height": 64},
+    reference={
+        "type": "template",
+        "template_id": "humanoid-1",
+    },
+    template_animation_id="walking-432",
+)
+
+# save animation frames
+for i, frame in enumerate(animation_response.images):
+    frame.pil_image().save(f"wizard_walk_{i}.png")
 ```
 
 See more client usage examples in the [Pixel Lab API Docs](https://api.pixellab.ai/v1/docs).

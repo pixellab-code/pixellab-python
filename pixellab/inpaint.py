@@ -104,7 +104,7 @@ def inpaint(
     }
     try:
         response = requests.post(
-            f"{client.base_url}/inpaint",
+            f"{client.base_url}/v2/inpaint",
             headers=client.headers(),
             json=request_data,
         )

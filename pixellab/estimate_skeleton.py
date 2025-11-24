@@ -48,7 +48,7 @@ def estimate_skeleton(
 
     try:
         response = requests.post(
-            f"{client.base_url}/estimate-skeleton",
+            f"{client.base_url}/v2/estimate-skeleton",
             headers=client.headers(),
             json=request_data,
         )

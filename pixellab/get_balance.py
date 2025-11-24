@@ -31,7 +31,7 @@ def get_balance(
     """
     try:
         response = requests.get(
-            f"{client.base_url}/balance",
+            f"{client.base_url}/v2/balance",
             headers=client.headers(),
         )
         response.raise_for_status()

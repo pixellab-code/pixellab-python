@@ -35,17 +35,15 @@ def animate_with_skeleton(
     skeleton_keypoints: list[SkeletonFrame],
     view: CameraView,
     direction: Direction,
-    reference_guidance_scale: float = 1.1,
-    pose_guidance_scale: float = 3.0,
+    reference_image: PIL.Image.Image,  # Required field
     isometric: bool = False,
     oblique_projection: bool = False,
     init_images: Optional[list[PIL.Image.Image]] = None,
     init_image_strength: int = 300,
-    reference_image: Optional[PIL.Image.Image] = None,
     inpainting_images: Optional[list[Optional[PIL.Image.Image]]] = None,
     mask_images: Optional[list[Optional[PIL.Image.Image]]] = None,
     color_image: Optional[PIL.Image.Image] = None,
-    seed: int = 0,
+    seed: Optional[int] = None,
 ) -> AnimateWithSkeletonResponse:
     """Generate an animation using skeleton points.
 
@@ -53,15 +51,13 @@ def animate_with_skeleton(
         client: The PixelLab client instance
         image_size: Size of the generated image
         skeleton_keypoints: List of frames, where each frame contains keypoints for the skeleton
-        reference_guidance_scale: How closely to follow the text description (1.0-20.0)
-        pose_guidance_scale: How closely to follow the style reference (1.0-20.0)
         view: Camera view angle
         direction: Subject direction
+        reference_image: Reference image for style guidance (required)
         isometric: Generate in isometric view
         oblique_projection: Generate in oblique projection
         init_images: Initial images to start from
         init_image_strength: Strength of the initial image influence (0-1000)
-        reference_image: Reference image for style guidance
         inpainting_images: Images used for showing the model with connected skeleton
         mask_images: Inpainting masks (black and white images, where white is where to inpaint)
         color_image: Forced color palette
@@ -96,35 +92,35 @@ def animate_with_skeleton(
 
     request_data = {
         "image_size": image_size,
-        "reference_guidance_scale": reference_guidance_scale,
-        "pose_guidance_scale": pose_guidance_scale,
         "view": view,
         "direction": direction,
         "isometric": isometric,
         "oblique_projection": oblique_projection,
-        "init_images": (
-            [img.model_dump() for img in init_images] if init_images else None
-        ),
-        "init_image_strength": init_image_strength,
         "skeleton_keypoints": skeleton_keypoints,
-        "reference_image": reference_image.model_dump() if reference_image else None,
-        "inpainting_images": (
-            [img.model_dump() if img else None for img in inpainting_images]
-            if inpainting_images
-            else None
-        ),
-        "mask_images": (
-            [img.model_dump() if img else None for img in mask_images]
-            if mask_images
-            else None
-        ),
-        "color_image": color_image.model_dump() if color_image else None,
-        "seed": seed,
+        "reference_image": reference_image.model_dump(),  # Required field
     }
+    
+    # Add optional parameters if provided
+    if init_images:
+        request_data["init_images"] = [img.model_dump() for img in init_images]
+    if init_image_strength != 300:  # Only send if not default
+        request_data["init_image_strength"] = init_image_strength
+    if inpainting_images:
+        request_data["inpainting_images"] = [
+            img.model_dump() if img else None for img in inpainting_images
+        ]
+    if mask_images:
+        request_data["mask_images"] = [
+            img.model_dump() if img else None for img in mask_images
+        ]
+    if color_image:
+        request_data["color_image"] = color_image.model_dump()
+    if seed is not None:
+        request_data["seed"] = seed
 
     try:
         response = requests.post(
-            f"{client.base_url}/animate-with-skeleton",
+            f"{client.base_url}/v2/animate-with-skeleton",
             headers=client.headers(),
             json=request_data,
         )

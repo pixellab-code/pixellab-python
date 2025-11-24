@@ -15,14 +15,14 @@ def test_generate_image_pixflux():
 
     response = client.generate_image_pixflux(
         description = "cute dragon",
-        image_size = {"width": 64, "height": 64},
+        image_size = {"width": 48, "height": 48},
         no_background = False,
         text_guidance_scale = 8.0,
     )
 
     image = response.image.pil_image()
     assert isinstance(image, PIL.Image.Image)
-    assert image.size == (64, 64)
+    assert image.size == (48, 48)
 
     results_dir = Path("tests") / "results"
     results_dir.mkdir(exist_ok=True)

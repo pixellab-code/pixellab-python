@@ -4,7 +4,8 @@ import pixellab
 
 
 def test_incorrect_secret_raises_meaningful_error():
-    client = pixellab.Client(secret="clearly wrong secret")
+    client = pixellab.Client.from_env_file(".env.development.secrets")
+    client.secret = "clearly wrong secret"  # Override with incorrect secret
 
     with pytest.raises(ValueError) as exc_info:
         client.generate_image_pixflux(
