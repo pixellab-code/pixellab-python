@@ -4,7 +4,7 @@ from typing import Any, Literal, Optional
 
 import PIL.Image
 import requests
-from pixellab.types import DirectionV2, CameraViewV2
+from pixellab.types import DirectionWithNone, CameraViewWithNone
 from pydantic import BaseModel
 
 from .models import Base64Image, ImageSize
@@ -29,8 +29,8 @@ def animate_with_text_v2(
     image_size: ImageSize,
     seed: Optional[int] = None,
     no_background: Optional[bool] = True,
-    direction: DirectionV2 = "none",
-    view: CameraViewV2 = "none",
+    direction: DirectionWithNone = "none",
+    view: CameraViewWithNone = "none",
 ) -> AnimateWithTextV2Response:
     """Generate pixel art animation from text description.
 
