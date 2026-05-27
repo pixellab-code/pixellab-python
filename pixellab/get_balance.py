@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 import requests
 from pydantic import BaseModel
@@ -9,21 +9,35 @@ if TYPE_CHECKING:
     from .client import PixelLabClient
 
 
-class BalanceResponse(BaseModel):
+class Credits(BaseModel):
     type: Literal["usd"] = "usd"
     usd: float
+
+
+class Subscription(BaseModel):
+    type: Literal["generations"] = "generations"
+    status: str
+    plan: Optional[str] = None
+    generations: float
+    total: float
+
+
+class BalanceResponse(BaseModel):
+    credits: Credits
+    subscription: Subscription
 
 
 def get_balance(
     client: Any,
 ) -> BalanceResponse:
-    """Get the current credit balance.
+    """Get the current account balance.
 
     Args:
         client: The PixelLab client instance
 
     Returns:
-        CreditsResponse containing the current credit balance
+        BalanceResponse with USD ``credits`` and ``subscription`` generation
+        balance.
 
     Raises:
         ValueError: If authentication fails

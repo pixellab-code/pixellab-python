@@ -51,3 +51,56 @@ class PixelLabClient(BaseModel):
     from .generate_isometric_tile import generate_isometric_tile
     from .resize import resize
     from .image_to_pixelart import image_to_pixelart
+
+    # --- New v2 endpoints ---
+    from ._common import get_background_job, wait_for_background_job
+
+    # Image operations
+    from .create_image_pixen import create_image_pixen
+    from .remove_background import remove_background
+
+    # Animation / rotation (v3, async)
+    from .animate_with_text_v3 import animate_with_text_v3
+    from .generate_8_rotations_v3 import generate_8_rotations_v3
+
+    # Character management
+    from .characters import (
+        create_character_with_4_directions,
+        create_character_with_8_directions,
+        create_character_pro,
+        create_character_v3,
+        create_character_state,
+        animate_character,
+        create_character_animation,
+        list_characters,
+        get_character,
+        delete_character,
+        update_character_tags,
+        download_character_zip,
+    )
+
+    # Object management
+    from .objects import (
+        create_1_direction_object,
+        create_8_direction_object,
+        create_map_object,
+        animate_object,
+        create_object_state,
+        dismiss_object_review,
+        select_object_frames,
+        list_objects,
+        get_object,
+        delete_object,
+        update_object_tags,
+    )
+
+    # Tilesets / isometric tiles / tiles-pro
+    from .tilesets import (
+        create_tileset_sidescroller,
+        create_tiles_pro,
+        list_tilesets,
+        get_tileset,
+        get_tiles_pro,
+        list_isometric_tiles,
+        get_isometric_tile,
+    )
